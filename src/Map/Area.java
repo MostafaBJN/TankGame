@@ -1,5 +1,8 @@
 package Map;
 
+/**
+ * Area of Any Object In Game
+ */
 public class Area {
 
     private int x;

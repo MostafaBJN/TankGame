@@ -7,6 +7,7 @@ public class Map {
     private String name;
     private ArrayList<ArrayList<Integer>> intsOfMap;
     private ArrayList<ArrayList<Ground>> grounds;
+    private ArrayList<Ground> groundsOneLineList;
     //vertical
     private int height;
     private int visualHeight;
@@ -42,10 +43,11 @@ public class Map {
         this.height = height;
         this.width = width;
         grounds = new ArrayList<>();
-        visualHeight = (height - 1) * (Ground.bigSize + Ground.smallSize) + (Ground.smallSize);
-        visualWidth = (width - 1) * (Ground.bigSize + Ground.smallSize) + (Ground.smallSize);
+        groundsOneLineList = new ArrayList<>();
+        visualHeight = ((height - 1) / 2) * (Ground.bigSize + Ground.smallSize) + (Ground.smallSize);
+        visualWidth = ((width - 1) / 2) * (Ground.bigSize + Ground.smallSize) + (Ground.smallSize);
         makingNewMap();
-        readingGrounds();
+        readyingGrounds();
     }
 
     private void makingNewMap() {
@@ -79,15 +81,17 @@ public class Map {
                 //Corners
                 else {
                     if(type == Ground.BREAKABLE_WALL)
-                        horizonGrounds.add(new BreakableWall(type, Ground.DOT, b, a));
+                        horizonGrounds.add(new BreakableWall(type, Ground.CORNER, b, a));
                     else
-                        horizonGrounds.add(new Ground(type, Ground.DOT, b, a));
+                        horizonGrounds.add(new Ground(type, Ground.CORNER, b, a));
                 }
+
+                groundsOneLineList.add(horizonGrounds.get(a));
             }
         }
     }
 
-    private void readingGrounds() {
+    private void readyingGrounds() {
         for (int b = 0; b < height; b++) {
             for (int a = 0; a < width; a++) {
                 Ground ground = grounds.get(b).get(a);
@@ -105,7 +109,7 @@ public class Map {
                 Ground right;
                 horizontal = a + 1;
                 vertical = b;
-                if(horizontal > width)
+                if(horizontal >= width)
                     right = new Ground(Ground.UNKNOWN, Ground.OUT_OF_MAP, vertical, horizontal);
                 else
                     right = grounds.get(vertical).get(horizontal);
@@ -113,7 +117,7 @@ public class Map {
                 Ground down;
                 horizontal = a;
                 vertical = b + 1;
-                if(vertical > height)
+                if(vertical >= height)
                     down = new Ground(Ground.UNKNOWN, Ground.OUT_OF_MAP, vertical, horizontal);
                 else
                     down = grounds.get(vertical).get(horizontal);
@@ -130,6 +134,26 @@ public class Map {
             }
         }
     }
+
+    /**
+     * replacing this wall with road in grounds List
+     * changing a broke wall to a road
+     *
+     * @param breakableWallGround Broke Wall
+     */
+    public void breakableWallBreaks(Ground breakableWallGround) {
+        BreakableWall breakableWall;
+        if(breakableWallGround instanceof BreakableWall){
+            breakableWall = (BreakableWall) breakableWallGround;
+        }
+        else {
+            System.out.println("NOT A BREAKABLE WALL");
+            return;
+        }
+        grounds.get(breakableWall.getVerticalPlaceInMap()).set(breakableWall.getHorizontalPlaceInMap(), new Ground(breakableWall));
+    }
+
+
 
     public String getName() {
         return name;
@@ -161,5 +185,9 @@ public class Map {
 
     public int getVisualWidth() {
         return visualWidth;
+    }
+
+    public ArrayList<Ground> getGroundsOneLineList() {
+        return groundsOneLineList;
     }
 }

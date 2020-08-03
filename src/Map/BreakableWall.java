@@ -4,8 +4,8 @@ import javax.swing.*;
 
 public class BreakableWall extends Ground {
     
-    private static final int DEFAULT_HEALTH_VALUE = 100;//should discus
-    private static final int MAX_HEALTH_VALUE = 5000;//should discus
+    public static final int DEFAULT_HEALTH_VALUE = 1000;//should discus
+    private static final int MAX_HEALTH_VALUE = 10000;//should discus
     private static final int MIN_HEALTH_VALUE = 1;//should discus
 
     private static int defaultHealth;
@@ -29,11 +29,26 @@ public class BreakableWall extends Ground {
         defaultHealth = newDefaultHealth;
     }
 
+    /**
+     * give Damage to Breakable Wall
+     * & checking for Breaking a Wall
+     *
+     * @param damage value of taken damage
+     * @return Is Wall Still Live
+     */
     public boolean givingDamage(int damage) {
         //should change type of this Ground
         if(health - damage <= 0)
             return false;
         health -= damage;
         return true;
+    }
+
+    public static int getDefaultHealth() {
+        return defaultHealth;
+    }
+
+    public int getHealth() {
+        return health;
     }
 }

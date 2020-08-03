@@ -8,6 +8,8 @@ import java.util.Scanner;
 public class MapManager {
 
     private static final String TYPE_OF_FILE = ".map";
+    private static final String FOLDER_PATH = "saves\\maps\\";
+
 
     private static final ArrayList<Map> maps;
     private static Map selectedMap;
@@ -23,6 +25,7 @@ public class MapManager {
         for (Map map:maps){
             if(map.getName().equals(name)) {
                 selectedMap = map;
+                return;
             }
         }
         JOptionPane.showMessageDialog(null, "This Map Does Not Exist! ", "Selecting Map", JOptionPane.ERROR_MESSAGE);
@@ -31,19 +34,24 @@ public class MapManager {
     public static ArrayList<String> loadMap(String nameOfFile) {
         File mapFile;
         try {
-            mapFile = new File(nameOfFile + TYPE_OF_FILE);
+            mapFile = new File(FOLDER_PATH + nameOfFile + TYPE_OF_FILE);
+            System.out.println(mapFile);
         } catch (Exception e) {
             try {
-                mapFile = new File(nameOfFile + ".txt");
+                mapFile = new File(FOLDER_PATH + nameOfFile + ".txt");
             } catch (Exception ee) {
                 return null;
             }
         }
+        System.out.println(mapFile);
         try {
             Scanner read = new Scanner(mapFile);
             ArrayList<String> mapIntsString = new ArrayList<>();
-            while (read.hasNextInt()) {
+            int i =0;
+            while (read.hasNextLine()) {
                 mapIntsString.add(read.nextLine());
+                System.out.println(mapIntsString.get(i));
+                i++;
             }
             return mapIntsString;
         }
@@ -101,4 +109,10 @@ public class MapManager {
     public static boolean deleteMap(Map mapToDelete) {
         return maps.remove(mapToDelete);
     }
+
+    public static Map getSelectedMap() {
+        return selectedMap;
+    }
+
+
 }
