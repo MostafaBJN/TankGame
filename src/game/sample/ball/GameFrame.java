@@ -24,8 +24,8 @@ import javax.swing.JFrame;
  */
 public class GameFrame extends JFrame {
 	
-	public static final int GAME_HEIGHT = MapManager.getSelectedMap().getHeight();                  // 720p game resolution
-	public static final int GAME_WIDTH = MapManager.getSelectedMap().getWidth();  // wide aspect ratio
+	public static final int GAME_HEIGHT = MapManager.getSelectedMap().getVisualHeight() + 31 + 7;                  // 720p game resolution
+	public static final int GAME_WIDTH = MapManager.getSelectedMap().getVisualWidth() + 6 + 7;  // wide aspect ratio
 
 	//uncomment all /*...*/ in the class for using Tank icon instead of a simple circle
 	/*private BufferedImage image;*/ 
@@ -37,8 +37,8 @@ public class GameFrame extends JFrame {
 	
 	public GameFrame(String title) {
 		super(title);
-		//setResizable(false);
 		setSize(GAME_WIDTH, GAME_HEIGHT);
+		setResizable(false);
 		lastRender = -1;
 		fpsHistory = new ArrayList<>(100);
 
@@ -100,14 +100,13 @@ public class GameFrame extends JFrame {
 	private void doRendering(Graphics2D g2d, GameState state) {
 		// Draw background
 //		g2d.setColor(Color.GRAY);
-//		g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+//		g2d.fillRect(0, 0, GAME_WIDTH +5 +5, GAME_HEIGHT+30 +5);
 //		// Draw ball
 //		g2d.setColor(Color.BLACK);
 //		g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
 		for(ArrayList<Ground> listGround:state.getMap().getGrounds()){
 			for(Ground ground:listGround){
-				g2d.drawImage(ground.getStyleImage(), ground.getStartHorizontalVisualPointInMap()+5, ground.getStartVerticalVisualPointInMap()+30,null);
-				System.out.println("HH = " + ground.getStartHorizontalVisualPointInMap() + " VV = " + ground.getStartVerticalVisualPointInMap());
+				g2d.drawImage(ground.getStyleImage(), ground.getStartHorizontalVisualPointInMap()+6, ground.getStartVerticalVisualPointInMap()+31,null);
 			}
 		}
 
@@ -129,13 +128,13 @@ public class GameFrame extends JFrame {
 			}
 			avg /= fpsHistory.size();
 			//TODO WORDS O SCREEN
-//			String str = String.format("Average FPS = %.1f , Last Interval = %d ms",
-//					avg, (currentRender - lastRender));
-//			g2d.setColor(Color.CYAN);
-//			g2d.setFont(g2d.getFont().deriveFont(18.0f));
-//			int strWidth = g2d.getFontMetrics().stringWidth(str);
-//			int strHeight = g2d.getFontMetrics().getHeight();
-//			g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, strHeight+50);
+			String str = String.format("Average FPS = %.1f , Last Interval = %d ms",
+					avg, (currentRender - lastRender));
+			g2d.setColor(Color.CYAN);
+			g2d.setFont(g2d.getFont().deriveFont(18.0f));
+			int strWidth = g2d.getFontMetrics().stringWidth(str);
+			int strHeight = g2d.getFontMetrics().getHeight();
+			g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, strHeight+50);
 		}
 		lastRender = currentRender;
 		// Print user guide

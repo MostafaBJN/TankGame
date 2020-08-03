@@ -2,7 +2,7 @@
 package game.sample.ball;
 
 import Map.MapManager;
-import com.company.Server.Game;
+
 
 import java.awt.EventQueue;
 import java.io.IOException;
