@@ -10,6 +10,10 @@ public class Bullet {
     private static final long LIFE_TIME = 4000;
     private static final long DEFAULT_VELOCITY = 20;
 
+    public static final int DEFAULT_DAMAGE_POWER = 50;
+    public static final int MAX_DAMAGE_POWER = 1000;
+    public static final int MIN_DAMAGE_POWER = 1;
+
     private Tank shooterTank;
 
     private int power;

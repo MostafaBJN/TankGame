@@ -1,12 +1,16 @@
-package game;
+package game.MenuGUI;
 
 
 import javax.swing.*;
+import java.net.Socket;
 
 public class GUIManager {
     //All GUIs
     private static LoginForm login;
     private static MainMenu mainMenu;
+//    private static Setting setting;
+//    private static PlayWithPc playWithPc;
+//    private static PlayMultiPlayer playMultiPlayer;
 
     static {
         try {
@@ -20,7 +24,7 @@ public class GUIManager {
 
     public static void openLogin(){
         login = new LoginForm();
-        login.showGUI();
+        new Thread(login).start();
     }
 
     public static void closeLogin(){
@@ -45,6 +49,26 @@ public class GUIManager {
 //    public static void close(){
 //        closeGUI();
 //    }
+
+    public static class ShowMessage implements Runnable{
+
+        private String message;
+        private String title;
+        private int type;
+        public static final int ERROR = JOptionPane.ERROR_MESSAGE;
+        public static final int INFORMATION = JOptionPane.INFORMATION_MESSAGE;
+
+        public ShowMessage(String message, String title, int type) {
+            this.message = message;
+            this.title = title;
+            this.type = type;
+        }
+
+        @Override
+        public void run() {
+            JOptionPane.showMessageDialog(null, message, title, type);
+        }
+    }
 
 
 }

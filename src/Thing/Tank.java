@@ -15,8 +15,6 @@ public class Tank
     private static final int MAX_HEALTH_VALUE = 1000;//should discus
     private static final int MIN_HEALTH_VALUE = 1;//should discus
 
-    private static final int FULL_CIRCLE_DEGREE = 360;
-
     private static int defaultHealth;
 
     private int health;
@@ -46,7 +44,7 @@ public class Tank
 
 
     public void takingPrize () {
-        
+
     }
 
 
@@ -64,6 +62,14 @@ public class Tank
 
     public int getY() {
         return y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public Bullet getShootedBullet() {
@@ -102,43 +108,5 @@ public class Tank
         this.currentPrize = currentPrize;
     }
 
-    public class Degree {
 
-        private static final int TURNING_DEGREE_VALUE = 18;
-        private static final int DEFAULT_ANGLE = 0;
-
-        private int angle;
-
-        public Degree() {
-            angle = randomAngle();
-        }
-
-        public Degree(int angle) {
-            this.angle = angle;
-        }
-
-        public int randomAngle() {
-            return new Random().nextInt(FULL_CIRCLE_DEGREE);
-        }
-
-        public void clockwiseTurning()
-        {
-            if(angle - TURNING_DEGREE_VALUE < 0)
-            {
-                angle = angle + FULL_CIRCLE_DEGREE;
-            }
-            angle = angle - TURNING_DEGREE_VALUE;
-        }
-
-        public void anticlockwiseTurning()
-        {
-
-            if(angle + TURNING_DEGREE_VALUE >= FULL_CIRCLE_DEGREE)
-            {
-                angle = angle + TURNING_DEGREE_VALUE - FULL_CIRCLE_DEGREE;
-            }
-            angle = angle + TURNING_DEGREE_VALUE;
-        }
-
-    }
 }

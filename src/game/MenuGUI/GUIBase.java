@@ -1,4 +1,4 @@
-package game;
+package game.MenuGUI;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class GUIBase extends JFrame{
+public class GUIBase extends JFrame implements Runnable{
 
 
     public static final String TWO_DIGIT_NUMBER_SAMPLE = "00";
@@ -49,6 +49,10 @@ public class GUIBase extends JFrame{
         dispose();
     }
 
+    @Override
+    public void run() {
+        showGUI();
+    }
 
 
     /**

@@ -1,4 +1,4 @@
-package game;
+package game.MenuGUI;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -101,10 +101,10 @@ public class LoginForm extends GUIBase {
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         setContentPane(mainPanel);
+        pack();
     }
 
     public void showGUI() {
-    	pack();
         setVisible(true);
     }
 
@@ -159,10 +159,14 @@ public class LoginForm extends GUIBase {
             boolean saveLogged = saveLoggedRBtn.isSelected();
             //TODO SEARCH IN USER
             if (e.getSource().equals(loginButton) || e.getSource().equals(usernameField) || e.getSource().equals(passwordField)) {
+                MainSe
                 if (username.equals("0")) {
                     if(password.equals("0")){
                         JOptionPane.showMessageDialog(LoginForm.this, "Logged Successfully!", "Login", JOptionPane.INFORMATION_MESSAGE);
                         //TODO close this And Open MAinMEnu
+                        //TODO Add to signed user
+                        GUIManager.closeLogin();
+                        GUIManager.openMainMenu();
                     }
                     else {
                         JOptionPane.showMessageDialog(LoginForm.this, "Password is Wrong!", "Login", JOptionPane.ERROR_MESSAGE);

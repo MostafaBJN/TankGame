@@ -1,12 +1,6 @@
 package Map;
 
-import game.GUIManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+import game.MenuGUI.GUIManager;
 
 public class MapTest {
 
