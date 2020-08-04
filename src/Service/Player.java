@@ -3,8 +3,9 @@ package Service;
 import Thing.Tank;
 
 import java.net.Socket;
+import java.util.Objects;
 
-public class Player {
+public class Player extends Setting {
 
     private String userName;
     private String password;
@@ -14,11 +15,7 @@ public class Player {
 
     private Socket socket;
 
-    private boolean isComputer;
-
     private Tank tank;
-
-    public Setting setting;
 
     public Player(String userName, String password, boolean keepLogin) {
         this.userName = userName;
@@ -30,5 +27,24 @@ public class Player {
         this.userName = userName;
         this.password = password;
         keepLogin = false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Player)) return false;
+
+        Player player = (Player) o;
+
+        return Objects.equals(userName, player.userName);
+    }
+
+    @Override
+    public int hashCode() {
+        return userName != null ? userName.hashCode() : 0;
+    }
+
+    public void setKeepLogin(boolean keepLogin) {
+        this.keepLogin = keepLogin;
     }
 }

@@ -18,7 +18,7 @@ public class Bullet {
 
     private int power;
     private double velocity;
-    private Tank.Degree direction;
+    private Degree direction;
     private Timer lifeTimer;
     private long startTime;
 
@@ -30,7 +30,7 @@ public class Bullet {
                 if(System.currentTimeMillis() - startTime >= LIFE_TIME){
                     //Kill Bullet
                     lifeTimer.stop();
-                    shooterTank.setShootedBullet(null);
+                    //TODO kill bullet
                 }
             }
         });

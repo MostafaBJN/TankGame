@@ -10,6 +10,9 @@ public class Prize
     private static final int POWER_SHOT_TRIPLE = 4;
 
 
+    int x;
+    int y;
+
 
 
     char typeOfPrize;
@@ -19,7 +22,4 @@ public class Prize
         typeOfPrize = typeOfPrize2;
     }
 
-    public static void pickedPrize (Prize prize, Tank prizeWinnerTank) {
-        prizeWinnerTank.setCurrentPrize(prize);
-    }
 }
