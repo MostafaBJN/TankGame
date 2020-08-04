@@ -16,7 +16,7 @@ public class Bullet {
 
     private Tank shooterTank;
 
-    private int power;
+    private int defaultPower;
     private double velocity;
     private Degree direction;
     private Timer lifeTimer;
@@ -38,4 +38,7 @@ public class Bullet {
         startTime = System.currentTimeMillis();
     }
 
+    public int getDefaultPower() {
+        return defaultPower;
+    }
 }

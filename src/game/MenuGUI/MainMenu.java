@@ -24,9 +24,6 @@ public class MainMenu extends GUIBase {
     public MainMenu(String title) {
         super(title);
 
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
         Border emptyBorder = new EmptyBorder(5, 5, 5, 5);
 

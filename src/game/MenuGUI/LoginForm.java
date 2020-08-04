@@ -34,7 +34,6 @@ public class LoginForm extends GUIBase {
     public LoginForm() {
         super(TITLE);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         mainPanel = new JPanel(new BorderLayout(5, 5));
         mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -105,14 +104,6 @@ public class LoginForm extends GUIBase {
 
         setContentPane(mainPanel);
         pack();
-    }
-
-    public void showGUI() {
-        setVisible(true);
-    }
-
-    public void closeGUI() {
-        this.dispose();
     }
 
     /**

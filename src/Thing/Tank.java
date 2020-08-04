@@ -81,7 +81,7 @@ public class Tank
     public static final int widthOfTank = BLACK_TANK_IMAGE.getWidth();
     public static final double diameter = Math.sqrt(heightOfTank*2 + widthOfTank*2);
 
-    private static int defaultHealth;
+    private int defaultHealth;
 
     private int model;
     private BufferedImage modelImage;
@@ -110,8 +110,11 @@ public class Tank
 
     }
 
+    public BufferedImage getModelImage() {
+        return modelImage;
+    }
 
-    public static int getDefaultHealth() {
+    public int getDefaultHealth() {
         return defaultHealth;
     }
 

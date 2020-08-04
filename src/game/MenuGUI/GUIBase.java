@@ -1,5 +1,7 @@
 package game.MenuGUI;
 
+import Service.Client.ClientMain;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -19,6 +21,23 @@ public class GUIBase extends JFrame implements Runnable{
 
     protected GUIBase(String title) {
         super(title);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                if (JOptionPane.showConfirmDialog(GUIBase.this,
+                        "Are you sure you want to close?", "Close Window?",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+                    try {
+                        ClientMain.getSocket().close();
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
+                    System.exit(0);
+                }
+            }
+        });
     }
 
     /**

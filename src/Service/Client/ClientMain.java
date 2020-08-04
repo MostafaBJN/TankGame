@@ -1,5 +1,6 @@
 package Service.Client;
 
+import Service.Command;
 import Service.Player;
 import game.MenuGUI.GUIManager;
 
@@ -9,9 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ClientMain {
-
-    public static final int MAIN_SERVER_PORT = 9999;
+public class ClientMain extends Command {
 
     private static Socket socket;
     private static ObjectInputStream inputStream;
@@ -26,8 +25,6 @@ public class ClientMain {
         } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
-
-        Socket socket;
         inputStream = null;
         outputStream = null;
         loggedPlayer = null;
@@ -38,7 +35,7 @@ public class ClientMain {
                 tries++;
                 socket = new Socket("127.0.0.1", MAIN_SERVER_PORT);
                 if(socket.isConnected()){
-                    new Thread(new GUIManager.ShowMessage("Connected Successfully\nWELCOME", "Connection to Server", GUIManager.ShowMessage.INFORMATION)).start();
+                    //new Thread(new GUIManager.ShowMessage("Connected Successfully\nWELCOME", "Connection to Server", GUIManager.ShowMessage.INFORMATION)).start();
                     break;
                 }
             } catch (IOException e) {
@@ -54,10 +51,14 @@ public class ClientMain {
             }
         }
 
-        outputStream = new ObjectOutputStream(socket.getOutputStream());
-        inputStream = new ObjectInputStream(socket.getInputStream());
-
-        //TODO Loading Files From Server
+        try {
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            inputStream = new ObjectInputStream(socket.getInputStream());
+        } catch (Exception e){
+            e.printStackTrace();
+            new GUIManager.ShowMessage("Game Server is not Available!\nTry Again Later", "Connection to Server", GUIManager.ShowMessage.ERROR).run();
+            System.exit(-1);
+        }
         GUIManager.openLogin();
     }
 

@@ -1,46 +1,90 @@
 package Service.Server;
 
+import Service.Command;
 import Service.Player;
+import game.MenuGUI.GUIManager;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class MainServer {
+public class MainServer extends Command {
 
     private static ServerSocket serverSocket;
-    private static ArrayList<Socket> connectionSocket;
+    private static ArrayList<Socket> connectionSockets;
 
     //all players info
     private static ArrayList<Player> players;
+    private static int countOfPlayers;
 //    private static ArrayList<GameServer> gameServers;
-    private static ArrayList<Thread> playerThreads;
+    //private static ArrayList<Thread> playerThreads;
 
     private static ObjectInputStream inputStream;
     private static ObjectOutputStream outputStream;
 
-    public static void main(String[] args) {
-        int count = 0;
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        countOfPlayers = 0;
+        connectionSockets = new ArrayList<>();
+        new Thread(new LoadPlayer()).start();
+        //new Thread(new CheckPlayersConnection()).start();
         try {
-            serverSocket = new ServerSocket(9999);
+            serverSocket = new ServerSocket(MAIN_SERVER_PORT);
             while(true) {
                 Socket connectionSocket = serverSocket.accept();
-                count++;
-                playerThreads.add(new Thread(new ClientHandler(connectionSocket, count), "User " + (count-1)));
-                playerThreads.get(count-1).start();
+                connectionSockets.add(connectionSocket);
+                System.out.println(connectionSocket.getRemoteSocketAddress());
+                countOfPlayers++;
+                Thread t = new Thread(new ClientCommand(connectionSocket, countOfPlayers));
+                t.start();
+
             }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-    static class ClientHandler implements Runnable {
+    private static class LoadPlayer implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                players = SaveAndLoad.<Player>loadListData(SaveAndLoad.PLAYER_FOLDER_PATH);
+            } catch (IOException | ClassNotFoundException exception) {
+                new GUIManager.ShowMessage("Can't Load Players", "Load", GUIManager.ShowMessage.ERROR);
+                players = new ArrayList<>();
+                exception.printStackTrace();
+            }
+        }
+    }
+
+//    private static class CheckPlayersConnection implements Runnable {
+//
+//        @Override
+//        public void run() {
+//            while (true) {
+//                Iterator<Socket> it = connectionSockets.iterator();
+//                while (it.hasNext()){
+//                    System.out.println(it.next());
+//                    try {
+//                        command = inputStream.readInt();
+//                    }
+//                    catch (java.io.EOFException eofException) {
+//                        System.out.println("FUCK");
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    static class ClientCommand implements Runnable {
 
         private Socket connectionSocket;
         private int clientNum;
 
-        public ClientHandler(Socket connectionSocket, int clientNum) {
+        public ClientCommand(Socket connectionSocket, int clientNum) {
             this.connectionSocket = connectionSocket;
             this.clientNum = clientNum;
         }
@@ -48,23 +92,56 @@ public class MainServer {
         @Override
         public void run() {
             try {
-//                outputStream = new ObjectOutputStream(connectionSocket.getOutputStream());
-//                inputStream = new ObjectInputStream(connectionSocket.getInputStream());
-
+                outputStream = new ObjectOutputStream(connectionSocket.getOutputStream());
+                inputStream = new ObjectInputStream(connectionSocket.getInputStream());
                 //TODO first login info send
+                int command = UNKNOWN;
                 while (true) {
                     //a player connect
+                    ;
+                    //get Command
+                    try {
+                        command = inputStream.readInt();
+                    }
+                    catch (java.io.EOFException eofException) {
+                        System.out.println("FUCK");
+                        break;
+                    }
+                    switch (command){
+                        case SIGN_UP:
+                            try {
+                                Object object = inputStream.readObject();
+                                if(object instanceof Player){
+                                    Player player = (Player) object;
+                                    players.add(player);
+                                    //SAVE Player
+                                    SaveAndLoad.<Player>saveObjectData(player, SaveAndLoad.PLAYER_FOLDER_PATH, "", SaveAndLoad.PLAYER_FILE_TYPE);
+                                    //TODO save
+                                }
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println("hello");
+                            break;
+                        case LOGGING_IN:
+                            break;
+                        case TRY_TO_LOGIN:
+                            break;
+                            //TODO MAKE A COMMAND MENU
 
+                    }
                 }
-                //TODO working with client
+            } catch (IOException exception) {
+                exception.printStackTrace();
             } finally {
                 try {
                     connectionSocket.close();
                 } catch (IOException ex) {
-                    System.err.println(ex);
+                    ex.printStackTrace();
                 }
             }
         }
+
 
 //        public void logIn()
 //        {
@@ -249,4 +326,5 @@ public class MainServer {
 //            }
 //        }
     }
+
 }
