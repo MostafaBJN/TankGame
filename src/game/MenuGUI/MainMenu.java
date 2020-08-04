@@ -1,5 +1,7 @@
 package game.MenuGUI;
 
+import Service.Client.ClientMain;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -88,7 +90,7 @@ public class MainMenu extends GUIBase {
         buttonHeight = logOutBtn.getPreferredSize().height + 10;
         logOutBtn.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
 
-        buttonsPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+        buttonsPanel = new JPanel(new GridLayout(4, 0, 5, 5));
         buttonsPanel.add(playMultiPlayerBtn);
         buttonsPanel.add(playWithPcBtn);
         buttonsPanel.add(settingBtn);
@@ -124,8 +126,7 @@ public class MainMenu extends GUIBase {
                 //TODO MULTI PLAYER SERVER MAKING
             }
             if(e.getSource().equals(logOutBtn)){
-                //TODO LOG OUT
-                //TODO disable keep login
+                ClientMain.logout();
                 GUIManager.closeMainMenu();
                 GUIManager.openLogin();
             }

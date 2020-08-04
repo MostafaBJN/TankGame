@@ -75,4 +75,5 @@ public class Player extends Setting implements Serializable {
     public Tank getTank() {
         return tank;
     }
+
 }

@@ -67,7 +67,6 @@ public class SaveAndLoad{
     }
 
     public static ArrayList<Object> loadObjectListData(String folderPath) throws IOException, ClassNotFoundException {
-
         File[] files = new File(folderPath).listFiles();
         ArrayList<File> fileList = new ArrayList<>(Arrays.asList(files));
 

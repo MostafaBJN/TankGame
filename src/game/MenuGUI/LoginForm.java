@@ -1,6 +1,7 @@
 package game.MenuGUI;
 
 import Service.Client.ClientMain;
+import Service.Command;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -153,43 +154,43 @@ public class LoginForm extends GUIBase {
             boolean keepLogin = saveLoggedRBtn.isSelected();
             //TODO SEARCH IN USER
             if (e.getSource().equals(loginButton) || e.getSource().equals(usernameField) || e.getSource().equals(passwordField)) {
-                int result = ClientMain.ERROR;
+                int result = Command.Login.ERROR;
                 try {
                     result = ClientMain.login(username, password, keepLogin);
                 } catch (IOException exception) {
-                    JOptionPane.showMessageDialog(LoginForm.this, "ERROR!", "Login", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(LoginForm.this, "LOGIN EXCEPTION!", "Login", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
                 switch (result){
-                    case ClientMain.SUCCESSFUL:
+                    case Command.Login.SUCCESSFUL:
                         JOptionPane.showMessageDialog(LoginForm.this, "Logged Successfully!", "Login", JOptionPane.INFORMATION_MESSAGE);
-                        try {
-                            if(ClientMain.loggingIn(username, password, keepLogin)) {
-                                GUIManager.closeLogin();
-                                GUIManager.openMainMenu();
-                            }
-                        } catch (IOException exception) {
-                            JOptionPane.showMessageDialog(LoginForm.this, "ERROR!", "Login", JOptionPane.ERROR_MESSAGE);
-                        }
+                        GUIManager.closeLogin();
+                        GUIManager.openMainMenu();
                         break;
-                    case ClientMain.NO_USERNAME:
+                    case Command.Login.NO_USERNAME:
                         JOptionPane.showMessageDialog(LoginForm.this, "You have'nt Sign Up yet!", "Login", JOptionPane.ERROR_MESSAGE);
                         break;
-                    case ClientMain.WRONG_PASSWORD:
+                    case Command.Login.WRONG_PASSWORD:
                         JOptionPane.showMessageDialog(LoginForm.this, "Password is Wrong!", "Login", JOptionPane.ERROR_MESSAGE);
                         break;
                     default:
-                        JOptionPane.showMessageDialog(LoginForm.this, "ERROR!", "Login", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(LoginForm.this, "UNKNOWN", "Login", JOptionPane.ERROR_MESSAGE);
                 }
-            } else if(e.getSource().equals(signUpButton)) {
+            }
+            else if(e.getSource().equals(signUpButton)) {
                 //TODO ADD THIS USER
                 try {
-                    ClientMain.signUp(username, password);
-                    JOptionPane.showMessageDialog(LoginForm.this, "Sign Up Successfully!", "Sign Up", JOptionPane.INFORMATION_MESSAGE);
+                    int result = ClientMain.signUp(username, password);
+                    if(result == Command.Login.SUCCESSFUL) {
+                        new Thread(new GUIManager.ShowMessage("Sign Up Successfully!", "Sign Up", JOptionPane.INFORMATION_MESSAGE)).start();
+                    }
+                    else {
+                        new Thread(new GUIManager.ShowMessage("Sign Up Can't Be Done!", "Sign Up", JOptionPane.INFORMATION_MESSAGE)).start();
+                    }
                 } catch (IOException exception) {
                     exception.printStackTrace();
-                    JOptionPane.showMessageDialog(LoginForm.this, "ERROR!", "Sign Up", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(LoginForm.this, "Sign Up Error!", "Sign Up", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }

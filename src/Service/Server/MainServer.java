@@ -8,35 +8,32 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class MainServer extends Command {
 
-    private static ServerSocket serverSocket;
-    private static ArrayList<Socket> connectionSockets;
+    protected static ServerSocket serverSocket;
+    protected static ArrayList<Socket> connectionSockets;
 
     //all players info
-    private static ArrayList<Player> players;
-    private static int countOfPlayers;
+    protected static ArrayList<Player> players;
+    protected static int countOfOnlinePlayers;
 //    private static ArrayList<GameServer> gameServers;
     //private static ArrayList<Thread> playerThreads;
 
-    private static ObjectInputStream inputStream;
-    private static ObjectOutputStream outputStream;
-
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        countOfPlayers = 0;
+        countOfOnlinePlayers = 0;
         connectionSockets = new ArrayList<>();
         new Thread(new LoadPlayer()).start();
         //new Thread(new CheckPlayersConnection()).start();
         try {
             serverSocket = new ServerSocket(MAIN_SERVER_PORT);
             while(true) {
+                System.out.println(countOfOnlinePlayers);
                 Socket connectionSocket = serverSocket.accept();
                 connectionSockets.add(connectionSocket);
                 System.out.println(connectionSocket.getRemoteSocketAddress());
-                countOfPlayers++;
-                Thread t = new Thread(new ClientCommand(connectionSocket, countOfPlayers));
+                countOfOnlinePlayers++;
+                Thread t = new Thread(new ClientCommand(connectionSocket, countOfOnlinePlayers));
                 t.start();
 
             }
@@ -44,6 +41,8 @@ public class MainServer extends Command {
             ex.printStackTrace();
         }
     }
+
+
 
     private static class LoadPlayer implements Runnable {
 
@@ -56,80 +55,66 @@ public class MainServer extends Command {
                 players = new ArrayList<>();
                 exception.printStackTrace();
             }
+
         }
     }
 
-//    private static class CheckPlayersConnection implements Runnable {
-//
-//        @Override
-//        public void run() {
-//            while (true) {
-//                Iterator<Socket> it = connectionSockets.iterator();
-//                while (it.hasNext()){
-//                    System.out.println(it.next());
-//                    try {
-//                        command = inputStream.readInt();
-//                    }
-//                    catch (java.io.EOFException eofException) {
-//                        System.out.println("FUCK");
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//    }
+    private static class SavePlayer implements Runnable {
 
-    static class ClientCommand implements Runnable {
+        Player player;
 
-        private Socket connectionSocket;
-        private int clientNum;
-
-        public ClientCommand(Socket connectionSocket, int clientNum) {
-            this.connectionSocket = connectionSocket;
-            this.clientNum = clientNum;
+        public SavePlayer(Player player) {
+            this.player = player;
         }
 
         @Override
         public void run() {
             try {
-                outputStream = new ObjectOutputStream(connectionSocket.getOutputStream());
-                inputStream = new ObjectInputStream(connectionSocket.getInputStream());
+                SaveAndLoad.<Player>saveObjectData(player, SaveAndLoad.PLAYER_FOLDER_PATH, "", SaveAndLoad.PLAYER_FILE_TYPE);
+            } catch (IOException exception) {
+                new Thread(new GUIManager.ShowMessage("Can't save Players", "Load", GUIManager.ShowMessage.ERROR)).start();
+                players = new ArrayList<>();
+                exception.printStackTrace();
+            }
+        }
+    }
+
+    private static class ClientCommand implements Runnable {
+
+        protected final Socket connectionSocket;
+        protected final int clientNum;
+        protected final ObjectInputStream inputStream;
+        protected final ObjectOutputStream outputStream;
+
+        public ClientCommand(Socket connectionSocket, int clientNum) throws IOException {
+            this.connectionSocket = connectionSocket;
+            this.clientNum = clientNum;
+            outputStream = new ObjectOutputStream(connectionSocket.getOutputStream());
+            inputStream = new ObjectInputStream(connectionSocket.getInputStream());
+        }
+
+        @Override
+        public void run() {
+            try {
                 //TODO first login info send
-                int command = UNKNOWN;
+                int command = MainMenu.UNKNOWN;
                 while (true) {
                     //a player connect
                     ;
                     //get Command
                     try {
+                        System.out.println("BEFORE");
                         command = inputStream.readInt();
+                        System.out.println("AFTER");
+                        commandMenu(command);
                     }
-                    catch (java.io.EOFException eofException) {
-                        System.out.println("FUCK");
+                    catch (java.io.EOFException | java.net.SocketException eofException) {
+                        System.out.println("Someone Left");
+                        connectionSockets.remove(connectionSocket);
+                        countOfOnlinePlayers--;
                         break;
                     }
-                    switch (command){
-                        case SIGN_UP:
-                            try {
-                                Object object = inputStream.readObject();
-                                if(object instanceof Player){
-                                    Player player = (Player) object;
-                                    players.add(player);
-                                    //SAVE Player
-                                    SaveAndLoad.<Player>saveObjectData(player, SaveAndLoad.PLAYER_FOLDER_PATH, "", SaveAndLoad.PLAYER_FILE_TYPE);
-                                    //TODO save
-                                }
-                            } catch (ClassNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                            System.out.println("hello");
-                            break;
-                        case LOGGING_IN:
-                            break;
-                        case TRY_TO_LOGIN:
-                            break;
-                            //TODO MAKE A COMMAND MENU
 
-                    }
                 }
             } catch (IOException exception) {
                 exception.printStackTrace();
@@ -142,189 +127,91 @@ public class MainServer extends Command {
             }
         }
 
+        private void commandMenu(int command) throws IOException {
+            switch (command){
+                case MainMenu.SIGN_UP:
+                    try {
+                        Object object = inputStream.readObject();
+                        System.out.println("Reading");
+                        if(object instanceof Player) {
+                            Player player = (Player) object;
+                            System.out.println(player.getUsername() + " " + player.getPassword());
+                            players.add(player);
+                            System.out.println("Added");
+                            outputStream.writeInt(Login.SUCCESSFUL);
+                            outputStream.flush();
+                            System.out.println("Sent");
+                            //SAVE Player
+                            new Thread(new SavePlayer(player)).start();
+                        }
+                        else {
+                            outputStream.writeInt(Login.ERROR);
+                            outputStream.flush();
+                        }
+                    } catch (ClassNotFoundException | IOException e) {
 
-//        public void logIn()
-//        {
-//            try
-//            {
-//                serverSocket = new ServerSocket(7000);
-//                try
-//                {
-//                    connectionSocket = serverSocket.accept();//waiting for connection.
-//                    outputStream = new ObjectOutputStream(connectionSocket.getOutputStream());
-//                    inputStream = new ObjectInputStream(connectionSocket.getInputStream());
-//                }
-//                catch(IOException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                player = new Player(connectionSocket, false);
-//                Thread t = new Thread(player);
-//                try
-//                {
-//                    outputStream.writeObject("you are first player");
-//                }
-//                catch (IOException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    String user = (String) inputStream.readObject();
-//                    String pass = (String) inputStream.readObject();
-//                    player.setUserName(user);
-//                    player.setPassword(pass);
-//                }
-//                catch (IOException | ClassNotFoundException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    outputStream.writeObject("name bazi ra vared konid");
-//                }
-//                catch (IOException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    nameOfGame = (String) inputStream.readObject();
-//                }
-//                catch (IOException | ClassNotFoundException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    outputStream.writeObject("tedad jan tankHa ra vared konid.");
-//                }
-//                catch (IOException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    String livesOfTankString = (String) inputStream.readObject();
-//                    livesOfTank = Integer.parseInt(livesOfTankString);
-//                }
-//                catch (IOException | ClassNotFoundException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    outputStream.writeObject("ghodrat tirHa ravared konid.");
-//                }
-//                catch (IOException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    String powerOfTirString = (String) inputStream.readObject();
-//                    powerOfTir = Integer.parseInt(powerOfTirString);
-//                }
-//                catch (IOException | ClassNotFoundException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    outputStream.writeObject("tedad jan divarHa ra vared konid.");
-//                }
-//                catch (IOException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    String playingWithComputerString = (String) inputStream.readObject();
-//                    playingWithComputer = Integer.parseInt(playingWithComputerString);
-//                }
-//                catch (IOException | ClassNotFoundException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    outputStream.writeObject("bazi ba digaran:Input 1  bazi ba computer:Input 2");
-//                }
-//                catch (IOException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    String playingWithComputerString = (String) inputStream.readObject();
-//                    playingWithComputer = Integer.parseInt(playingWithComputerString);
-//                }
-//                catch (IOException | ClassNotFoundException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    outputStream.writeObject("tak be tak:Input 1  grouhi:Input 2");
-//                }
-//                catch (IOException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    String grouhiString = (String) inputStream.readObject();
-//                    grouhi = Integer.parseInt(grouhiString);
-//                }
-//                catch (IOException | ClassNotFoundException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    outputStream.writeObject("tedade bazikonan ra vared konid");
-//                }
-//                catch (IOException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    String countOfPlayersString = (String) inputStream.readObject();
-//                    countOfPlayers = Integer.parseInt(countOfPlayersString);
-//                }
-//                catch (IOException | ClassNotFoundException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    outputStream.writeObject("tedade bazihaye league ra vared konid");
-//                }
-//                catch (IOException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                try
-//                {
-//                    String leagueString = (String) inputStream.readObject();
-//                    league = Integer.parseInt(leagueString);
-//                }
-//                catch (IOException | ClassNotFoundException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                t.start();
-//            }
-//            catch (java.net.SocketException e)
-//            {
-//                e.printStackTrace();
-//            }
-//            catch (IOException e)
-//            {
-//                e.printStackTrace();
-//            }
-//        }
+                        e.printStackTrace();
+                    }
+                    break;
+                case MainMenu.TRY_TO_LOGIN:
+                    try {
+                        Object object = inputStream.readObject();
+                        System.out.println("Reading");
+                        if (object instanceof Player) {
+                            Player player = (Player) object;
+                            for (Player playerOfList : players) {
+                                if (playerOfList.equals(player)) {
+                                    if(playerOfList.getPassword().equals(player.getPassword())) {
+                                        System.out.println("OK FOR LOGIN");
+                                        outputStream.writeInt(Login.SUCCESSFUL);
+                                        outputStream.flush();
+                                        return;
+                                    }
+                                    else {
+                                        System.out.println("WRONG PASS");
+                                        outputStream.writeInt(Login.WRONG_PASSWORD);
+                                        outputStream.flush();
+                                        return;
+                                    }
+                                }
+                            }
+                            System.out.println("NO USERNAME");
+                            outputStream.writeInt(Login.NO_USERNAME);
+                            outputStream.flush();
+                        }
+                        outputStream.writeInt(Login.ERROR);
+                        outputStream.flush();
+                    } catch (IOException | ClassNotFoundException exception) {
+                        exception.printStackTrace();
+                    }
+                    break;
+                case MainMenu.LOGGING_IN:
+                    try {
+                        Object object = inputStream.readObject();
+                        System.out.println("Reading");
+                        if (object instanceof Player) {
+                            Player player = (Player) object;
+                            for (Player playerOfList : players) {
+                                if (playerOfList.equals(player)) {
+                                    System.out.println("LOGGED");
+                                    outputStream.writeObject(playerOfList);
+                                    outputStream.flush();
+                                    return;
+                                }
+                            }
+                        }
+                        outputStream.writeObject(null);
+                        outputStream.flush();
+                    } catch (IOException | ClassNotFoundException exception) {
+                        exception.printStackTrace();
+                    }
+                    break;
+                //TODO MAKE A COMMAND MENU
+
+            }
+        }
+
     }
+
 
 }

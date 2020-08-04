@@ -72,7 +72,7 @@ public class Tank
             BLUE_INVINCIBLE_TANK_IMAGE = ImageIO.read(new File(FOLDER_PATH + "blue" + INVINCIBLE_STRING + TYPE_OF_FILE));
             GREEN_INVINCIBLE_TANK_IMAGE = ImageIO.read(new File(FOLDER_PATH + "green" + INVINCIBLE_STRING + TYPE_OF_FILE));
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Map Images Not Loaded!", "Loading Images", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Tank Images Not Loaded!", "Loading Images", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
@@ -109,6 +109,26 @@ public class Tank
     public void takingPrize () {
 
     }
+
+    /**
+     * Find the Image Of This Ground
+     */
+    public void styleFinder() {
+        switch (model) {
+            case BLACK_TANK -> modelImage = BLACK_TANK_IMAGE;
+            case SAND_TANK -> modelImage = SAND_TANK_IMAGE;
+            case RED_TANK -> modelImage = RED_TANK_IMAGE;
+            case BLUE_TANK -> modelImage = BLUE_TANK_IMAGE;
+            case GREEN_TANK -> modelImage = GREEN_TANK_IMAGE;
+            case BLACK_INVINCIBLE_TANK -> modelImage = BLACK_INVINCIBLE_TANK_IMAGE;
+            case SAND_INVINCIBLE_TANK -> modelImage = SAND_INVINCIBLE_TANK_IMAGE;
+            case RED_INVINCIBLE_TANK -> modelImage = RED_INVINCIBLE_TANK_IMAGE;
+            case BLUE_INVINCIBLE_TANK -> modelImage = BLUE_INVINCIBLE_TANK_IMAGE;
+            case GREEN_INVINCIBLE_TANK -> modelImage = GREEN_INVINCIBLE_TANK_IMAGE;
+        }
+    }
+
+
 
     public BufferedImage getModelImage() {
         return modelImage;

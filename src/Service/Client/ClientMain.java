@@ -3,6 +3,7 @@ package Service.Client;
 import Service.Command;
 import Service.Player;
 import game.MenuGUI.GUIManager;
+import game.MenuGUI.LoginForm;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -25,8 +26,6 @@ public class ClientMain extends Command {
         } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
-        inputStream = null;
-        outputStream = null;
         loggedPlayer = null;
         int tries = 0;
         //wait till connect
@@ -65,19 +64,19 @@ public class ClientMain extends Command {
     /**
      * sign up a player to server
      */
-    public static void signUp(String username, String password) throws IOException {
-        //TODO send a command to server which i want to SIGN UP with player info
+    public static int signUp(String username, String password) throws IOException {
         outputStream.writeInt(0);
+        System.out.println("FFFF");
+        outputStream.flush();
         outputStream.writeObject(new Player(username, password));
+        outputStream.flush();
+        int result = inputStream.readInt();
+        return result;
     }
 
     /**
      * RETURN OF SERVER ABOUT LOGIN
      */
-    public static final int ERROR = -1;
-    public static final int WRONG_PASSWORD = 2;
-    public static final int NO_USERNAME = 1;
-    public static final int SUCCESSFUL = 0;
 
     /**
      * get info from login GUI and check with server and give result
@@ -85,10 +84,20 @@ public class ClientMain extends Command {
      * @return result of trying to login
      */
     public static int login(String username, String password, boolean keepLogin) throws IOException {
-        //TODO send a command to server which i want to LOGIN with player info
-        outputStream.writeInt(0);
-        outputStream.writeObject(new Player(username, password, keepLogin));
-        return inputStream.readInt();
+        outputStream.writeInt(MainMenu.TRY_TO_LOGIN);
+        outputStream.flush();
+        Player player = new Player(username, password, keepLogin);
+        outputStream.writeObject(player);
+        outputStream.flush();
+        int result = inputStream.readInt();
+        System.out.println(result + "dddd");
+        if(result == Login.SUCCESSFUL) {
+            if(!loggingIn(player)){
+                JOptionPane.showMessageDialog(null, "NULL!", "Login", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        System.out.println("REEEEEEE");
+        return result;
     }
 
     /**
@@ -96,18 +105,18 @@ public class ClientMain extends Command {
      *
      * @return result of logging in
      */
-    public static boolean loggingIn(String username, String password, boolean keepLogin) throws IOException {
+    public static boolean loggingIn(Player player) throws IOException {
         //TODO send a command to server which i want to get Player Info
-        outputStream.writeInt(0);
-        outputStream.writeObject(new Player(username, password, keepLogin));
-        Object object = null;
+        outputStream.writeInt(MainMenu.LOGGING_IN);
+        outputStream.writeObject(player);
+        System.out.println("FFFFFFF");
+        Object object;
         try {
             object = inputStream.readObject();
             if (object instanceof Player){
-                //TODO server side
-//            Player player = (Player) object;
-//            player.setKeepLogin(keepLogin);
-                loggedPlayer = (Player) object;
+                Player playerInList = (Player) object;
+                player.setKeepLogin(player.isKeepLogin());
+                loggedPlayer = playerInList;
                 return true;
             }
             else {
@@ -115,9 +124,14 @@ public class ClientMain extends Command {
                 return false;
             }
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
             loggedPlayer = null;
             return false;
         }
+    }
+
+    public static void logout() {
+        loggedPlayer = null;
     }
 
     public static Socket getSocket() {
