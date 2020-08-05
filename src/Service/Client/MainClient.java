@@ -2,8 +2,7 @@ package Service.Client;
 
 import Service.Command;
 import Service.Player;
-import game.MenuGUI.GUIManager;
-import game.MenuGUI.LoginForm;
+import Game.GUIMenu.*;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -11,7 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ClientMain extends Command {
+public class MainClient extends Command {
 
     private static Socket socket;
     private static ObjectInputStream inputStream;
@@ -66,7 +65,6 @@ public class ClientMain extends Command {
      */
     public static int signUp(String username, String password) throws IOException {
         outputStream.writeInt(0);
-        System.out.println("FFFF");
         outputStream.flush();
         outputStream.writeObject(new Player(username, password));
         outputStream.flush();
@@ -90,13 +88,11 @@ public class ClientMain extends Command {
         outputStream.writeObject(player);
         outputStream.flush();
         int result = inputStream.readInt();
-        System.out.println(result + "dddd");
         if(result == Login.SUCCESSFUL) {
             if(!loggingIn(player)){
                 JOptionPane.showMessageDialog(null, "NULL!", "Login", JOptionPane.ERROR_MESSAGE);
             }
         }
-        System.out.println("REEEEEEE");
         return result;
     }
 
@@ -109,7 +105,6 @@ public class ClientMain extends Command {
         //TODO send a command to server which i want to get Player Info
         outputStream.writeInt(MainMenu.LOGGING_IN);
         outputStream.writeObject(player);
-        System.out.println("FFFFFFF");
         Object object;
         try {
             object = inputStream.readObject();

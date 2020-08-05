@@ -2,7 +2,7 @@ package Service.Server;
 
 import Service.Command;
 import Service.Player;
-import game.MenuGUI.GUIManager;
+import Game.GUIMenu.GUIManager;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -28,7 +28,7 @@ public class MainServer extends Command {
         try {
             serverSocket = new ServerSocket(MAIN_SERVER_PORT);
             while(true) {
-                System.out.println(countOfOnlinePlayers);
+                System.out.println("Online Players: " + countOfOnlinePlayers);
                 Socket connectionSocket = serverSocket.accept();
                 connectionSockets.add(connectionSocket);
                 System.out.println(connectionSocket.getRemoteSocketAddress());
@@ -43,22 +43,29 @@ public class MainServer extends Command {
     }
 
 
-
+    /**
+     * Load Data Of Player in A Thread
+     */
     private static class LoadPlayer implements Runnable {
 
         @Override
         public void run() {
             try {
+                System.out.println("LOADING");
                 players = SaveAndLoad.<Player>loadListData(SaveAndLoad.PLAYER_FOLDER_PATH);
             } catch (IOException | ClassNotFoundException exception) {
                 new GUIManager.ShowMessage("Can't Load Players", "Load", GUIManager.ShowMessage.ERROR);
                 players = new ArrayList<>();
                 exception.printStackTrace();
             }
+            System.out.println("DONE");
 
         }
     }
 
+    /**
+     * Save Data Of Player in A Thread
+     */
     private static class SavePlayer implements Runnable {
 
         Player player;
@@ -70,16 +77,18 @@ public class MainServer extends Command {
         @Override
         public void run() {
             try {
+                System.out.println("SAVING");
                 SaveAndLoad.<Player>saveObjectData(player, SaveAndLoad.PLAYER_FOLDER_PATH, "", SaveAndLoad.PLAYER_FILE_TYPE);
             } catch (IOException exception) {
                 new Thread(new GUIManager.ShowMessage("Can't save Players", "Load", GUIManager.ShowMessage.ERROR)).start();
                 players = new ArrayList<>();
                 exception.printStackTrace();
             }
+            System.out.println("DONE");
         }
     }
 
-    private static class ClientCommand implements Runnable {
+    public static class ClientCommand implements Runnable {
 
         protected final Socket connectionSocket;
         protected final int clientNum;

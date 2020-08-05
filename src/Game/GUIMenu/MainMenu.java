@@ -1,6 +1,6 @@
-package game.MenuGUI;
+package Game.GUIMenu;
 
-import Service.Client.ClientMain;
+import Service.Client.MainClient;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -126,7 +126,7 @@ public class MainMenu extends GUIBase {
                 //TODO MULTI PLAYER SERVER MAKING
             }
             if(e.getSource().equals(logOutBtn)){
-                ClientMain.logout();
+                MainClient.logout();
                 GUIManager.closeMainMenu();
                 GUIManager.openLogin();
             }

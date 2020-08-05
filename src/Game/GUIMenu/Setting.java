@@ -1,4 +1,4 @@
-package game.MenuGUI;
+package Game.GUIMenu;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Setting extends GUIBase{
+public class Setting extends GUIBase {
 
     private JButton settingBtn;
     private JButton playWithPcBtn;
@@ -23,7 +23,7 @@ public class Setting extends GUIBase{
     public Setting(String title) {
         super(title);
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
         Border emptyBorder = new EmptyBorder(5, 5, 5, 5);

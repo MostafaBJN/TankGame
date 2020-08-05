@@ -1,5 +1,6 @@
 /*** In The Name of Allah ***/
-package game.sample.ball;
+package Game.Play;
+
 
 /**
  * A very simple structure for the main game loop.
@@ -35,9 +36,9 @@ public class GameLoop implements Runnable {
 	 */
 	public void init() {
 		state = new GameState();
-//		canvas.addKeyListener(state.getKeyListener());
-//		canvas.addMouseListener(state.getMouseListener());
-//		canvas.addMouseMotionListener(state.getMouseMotionListener());
+		canvas.addKeyListener(state.getKeyListener());
+		canvas.addMouseListener(state.getMouseListener());
+		canvas.addMouseMotionListener(state.getMouseMotionListener());
 	}
 
 	@Override
@@ -46,7 +47,7 @@ public class GameLoop implements Runnable {
 		while (!gameOver) {
 			try {
 				long start = System.currentTimeMillis();
-				//
+
 				state.update();
 				canvas.render(state);
 				gameOver = state.gameOver;

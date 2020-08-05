@@ -1,8 +1,11 @@
 /*** In The Name of Allah ***/
-package game.sample.ball;
+package Game.Play;
 
+import Game.GUIMenu.GUIBase;
 import Map.Ground;
 import Map.MapManager;
+import Thing.PlayingTank;
+import Thing.Tank;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -10,7 +13,6 @@ import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
-import javax.swing.JFrame;
 
 /**
  * The window on which the rendering is performed.
@@ -22,7 +24,7 @@ import javax.swing.JFrame;
  * 
  * @author Seyed Mohammad Ghaffarian
  */
-public class GameFrame extends JFrame {
+public class GameFrame extends GUIBase {
 	
 	public static final int GAME_HEIGHT = MapManager.getSelectedMap().getVisualHeight() + 31 + 7;                  // 720p game resolution
 	public static final int GAME_WIDTH = MapManager.getSelectedMap().getVisualWidth() + 6 + 7;  // wide aspect ratio
@@ -104,10 +106,13 @@ public class GameFrame extends JFrame {
 //		// Draw ball
 //		g2d.setColor(Color.BLACK);
 //		g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
-		for(ArrayList<Ground> listGround:state.getMap().getGrounds()){
+		for(ArrayList<Ground> listGround:state.getGameMap().getMap().getGrounds()){
 			for(Ground ground:listGround){
 				g2d.drawImage(ground.getStyleImage(), ground.getStartHorizontalVisualPointInMap()+6, ground.getStartVerticalVisualPointInMap()+31,null);
 			}
+		}
+		for(PlayingTank playingTank:state.getGameMap().getPlayingTanks()){
+			g2d.drawImage(playingTank.getModelImage(), playingTank.getX()- (Tank.widthOfTank/2), (playingTank.getY()- Tank.heightOfTank/2), null);
 		}
 
 

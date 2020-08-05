@@ -1,8 +1,7 @@
-package game.MenuGUI;
+package Game.GUIMenu;
 
 
 import javax.swing.*;
-import java.net.Socket;
 
 public class GUIManager {
     //All GUIs

@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 public class Setting {
 
     /*
-    Access with ClientMain.getLoggedPlayer.....
+    Access with MainClient.getLoggedPlayer.....
      */
 
     private int defaultTankHealth;

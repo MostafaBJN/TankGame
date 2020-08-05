@@ -1,5 +1,6 @@
 package Thing;
 
+
 public class PlayingTank extends Tank {
 
     private int health;
@@ -7,26 +8,30 @@ public class PlayingTank extends Tank {
     private int x;
     private int y;
 
+    VisualArea visualArea;
+
     private boolean prizePicked;
     private Prize currentPrize;
 
-    private double velocity;
+    private static final int DEFAULT_SPEED = 20;
+    private static final int DEFAULT_ANGLE = -90;
+
+    private double xVelocity;
+    private double yVelocity;
     private Degree direction;
 
     private boolean invincible;
-    int powerOfTir;
+    private int powerOfTir;
 
-    public PlayingTank(int health, int x, int y) {
-        super();
-        this.health = health;
+    public PlayingTank(Tank tank, int x, int y){
+        super(tank);
+        health = defaultHealth;
         this.x = x;
         this.y = y;
-        direction = new Degree();
+        direction = new Degree(DEFAULT_ANGLE);
         invincible = false;
-    }
-
-    public PlayingTank(Tank tank){
-        super(tank);
+        powerOfTir = Bullet.DEFAULT_DAMAGE_POWER;
+        visualArea = new VisualArea(widthOfTank, health, direction, x, y);
     }
 
 
@@ -57,10 +62,6 @@ public class PlayingTank extends Tank {
         return currentPrize;
     }
 
-    public double getVelocity() {
-        return velocity;
-    }
-
     public Degree getDirection() {
         return direction;
     }
@@ -73,4 +74,8 @@ public class PlayingTank extends Tank {
         this.currentPrize = currentPrize;
     }
 
+
+    public VisualArea getVisualArea() {
+        return visualArea;
+    }
 }

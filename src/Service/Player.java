@@ -24,6 +24,7 @@ public class Player extends Setting implements Serializable {
         this.username = username;
         this.password = password;
         this.keepLogin = keepLogin;
+        tank = new Tank(username);
     }
 
     public Player(String username, String password) {
@@ -76,4 +77,15 @@ public class Player extends Setting implements Serializable {
         return tank;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setTank(Tank tank) {
+        this.tank = tank;
+    }
 }

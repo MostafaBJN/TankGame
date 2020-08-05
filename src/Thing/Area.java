@@ -5,27 +5,29 @@ package Thing;
  */
 public class Area {
 
-    private int x;
-    private int y;
+    private int width;
+    private int height;
+    private double diameter;
 
-    public Area(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Area(int width, int height) {
+        this.width = width;
+        this.height = height;
+        diameter = Math.sqrt(height*2 + width*2);
     }
 
-    public int getX() {
-        return x;
+    public int getWidth() {
+        return width;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public void setWidth(int width) {
+        this.width = width;
     }
 
-    public int getY() {
-        return y;
+    public int getHeight() {
+        return height;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public void setHeight(int height) {
+        this.height = height;
     }
 }

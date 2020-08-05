@@ -20,5 +20,10 @@ public class Command {
         public static final int SUCCESSFUL = 0;
     }
 
+    public static class PlayGame {
+        public static final int SEND_GAME_STATE = 0;
+        public static final int GET_GAME_STATE = 1;
+    }
+
 
 }

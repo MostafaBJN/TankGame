@@ -1,17 +1,13 @@
-package game.MenuGUI;
+package Game.GUIMenu;
 
-import Service.Client.ClientMain;
+import Service.Client.MainClient;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
 public class GUIBase extends JFrame implements Runnable{
 
@@ -29,11 +25,6 @@ public class GUIBase extends JFrame implements Runnable{
                         "Are you sure you want to close?", "Close Window?",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
-                    try {
-                        ClientMain.getSocket().close();
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
-                    }
                     System.exit(0);
                 }
             }

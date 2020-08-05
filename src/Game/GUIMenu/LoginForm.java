@@ -1,6 +1,6 @@
-package game.MenuGUI;
+package Game.GUIMenu;
 
-import Service.Client.ClientMain;
+import Service.Client.MainClient;
 import Service.Command;
 
 import javax.swing.*;
@@ -156,7 +156,7 @@ public class LoginForm extends GUIBase {
             if (e.getSource().equals(loginButton) || e.getSource().equals(usernameField) || e.getSource().equals(passwordField)) {
                 int result = Command.Login.ERROR;
                 try {
-                    result = ClientMain.login(username, password, keepLogin);
+                    result = MainClient.login(username, password, keepLogin);
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(LoginForm.this, "LOGIN EXCEPTION!", "Login", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -181,7 +181,7 @@ public class LoginForm extends GUIBase {
             else if(e.getSource().equals(signUpButton)) {
                 //TODO ADD THIS USER
                 try {
-                    int result = ClientMain.signUp(username, password);
+                    int result = MainClient.signUp(username, password);
                     if(result == Command.Login.SUCCESSFUL) {
                         new Thread(new GUIManager.ShowMessage("Sign Up Successfully!", "Sign Up", JOptionPane.INFORMATION_MESSAGE)).start();
                     }

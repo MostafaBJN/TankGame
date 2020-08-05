@@ -3,6 +3,7 @@ package Map;
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class MapManager {
@@ -11,13 +12,9 @@ public class MapManager {
     private static final String FOLDER_PATH = "saves\\maps\\";
 
 
-    private static final ArrayList<Map> maps;
+    private static ArrayList<Map> maps;
     private static Map selectedMap;
 
-    static {
-        maps = new ArrayList<>();
-        selectedMap = null;
-    }
 
     private MapManager() { }
 
@@ -28,40 +25,65 @@ public class MapManager {
                 return;
             }
         }
-        JOptionPane.showMessageDialog(null, "This Map Does Not Exist! ", "Selecting Map", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, name + " Does Not Exist! ", "Selecting Map", JOptionPane.ERROR_MESSAGE);
     }
 
-    public static ArrayList<String> loadMap(String nameOfFile) {
-        File mapFile;
-        try {
-            mapFile = new File(FOLDER_PATH + nameOfFile + TYPE_OF_FILE);
-            System.out.println(mapFile);
-        } catch (Exception e) {
+    public static void loadAllMaps() {
+        maps = new ArrayList<Map>();
+        File[] files = new File(FOLDER_PATH).listFiles();
+        ArrayList<File> fileList = new ArrayList<>(Arrays.asList(files));
+
+        for (File file:fileList){
+            ArrayList<String> mapIntsString;
             try {
-                mapFile = new File(FOLDER_PATH + nameOfFile + ".txt");
-            } catch (Exception ee) {
-                return null;
+                Scanner read = new Scanner(file);
+                mapIntsString = new ArrayList<>();
+                int i =0;
+                while (read.hasNextLine()) {
+                    mapIntsString.add(read.nextLine());
+                    i++;
+                }
+            } catch (FileNotFoundException fileNotFoundException) {
+                System.out.println(file.getName() + " MAP NOT LOADED");
+                fileNotFoundException.printStackTrace();
+                continue;
             }
+            makeLoadedMap(file.getName(), mapIntsString);
         }
-        System.out.println(mapFile);
-        try {
-            Scanner read = new Scanner(mapFile);
-            ArrayList<String> mapIntsString = new ArrayList<>();
-            int i =0;
-            while (read.hasNextLine()) {
-                mapIntsString.add(read.nextLine());
-                System.out.println(mapIntsString.get(i));
-                i++;
-            }
-            return mapIntsString;
-        }
-        catch (FileNotFoundException e){
-            System.out.println("Can't Read the File");
-            e.fillInStackTrace();
-        }
-        System.out.println("NO MAP LOADED");
-        return null;
     }
+
+//
+//    public static ArrayList<String> loadMap(String nameOfFile) {
+//        File mapFile;
+//        try {
+//            mapFile = new File(FOLDER_PATH + nameOfFile + TYPE_OF_FILE);
+//            System.out.println(mapFile);
+//        } catch (Exception e) {
+//            try {
+//                mapFile = new File(FOLDER_PATH + nameOfFile + ".txt");
+//            } catch (Exception ee) {
+//                return null;
+//            }
+//        }
+//        System.out.println(mapFile);
+//        try {
+//            Scanner read = new Scanner(mapFile);
+//            ArrayList<String> mapIntsString = new ArrayList<>();
+//            int i =0;
+//            while (read.hasNextLine()) {
+//                mapIntsString.add(read.nextLine());
+//                System.out.println(mapIntsString.get(i));
+//                i++;
+//            }
+//            return mapIntsString;
+//        }
+//        catch (FileNotFoundException e){
+//            System.out.println("Can't Read the File");
+//            e.fillInStackTrace();
+//        }
+//        System.out.println("NO MAP LOADED");
+//        return null;
+//    }
 
     public static void makeLoadedMap(String name, ArrayList<String> mapIntsString) {
         //no map loaded
@@ -115,4 +137,7 @@ public class MapManager {
     }
 
 
+    public static ArrayList<Map> getMaps() {
+        return maps;
+    }
 }

@@ -1,18 +1,15 @@
 package Thing;
 
-public class VisualArea {
+public class VisualArea extends Area {
 
-    private int upLeftPoint;
-    private int downRightPoint;
-    private double diameter;
-    private int height;
-    private int weight;
+    private int upLeftCorner;
+    private int corner1;
+    private int corner2;
+    private int corner3;
+    private int corner4;
+    private Degree direction;
 
-    public VisualArea(int upLeftPoint, int downRightPoint, int height, int weight) {
-        this.upLeftPoint = upLeftPoint;
-        this.downRightPoint = downRightPoint;
-        this.height = height;
-        this.weight = weight;
-        diameter = Math.sqrt(height*2 + weight*2);
+    public VisualArea(int width, int height, Degree direction, int x, int y) {
+        super(width, height);
     }
 }

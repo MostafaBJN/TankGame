@@ -166,10 +166,6 @@ public class Ground {
     /**
      * ALWAYS Calling With settingAroundGrounds & styleFinder
      *
-     * @param type
-     * @param place
-     * @param VerticalPlaceInMap
-     * @param HorizontalPlaceInMap
      */
     public Ground(int type, int place, int VerticalPlaceInMap, int HorizontalPlaceInMap) {
 
@@ -204,7 +200,7 @@ public class Ground {
         } else {
             startHorizontalVisualPointInMap = ((HorizontalPlaceInMap - 1) / 2) * (bigSize + smallSize) + smallSize;
         }
-        endHorizontalVisualPointInMap = startVerticalVisualPointInMap + area.getX();
+        endHorizontalVisualPointInMap = startHorizontalVisualPointInMap + area.getX();
     }
 
     /**
@@ -461,4 +457,6 @@ public class Ground {
     public BufferedImage getStyleImage() {
         return styleImage;
     }
+
+
 }

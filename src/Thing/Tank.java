@@ -26,16 +26,17 @@ public class Tank
     /**
      * STYLES
      */
-    private static final int BLACK_TANK = 0;
-    private static final int SAND_TANK = 1;
-    private static final int RED_TANK = 2;
-    private static final int BLUE_TANK = 3;
-    private static final int GREEN_TANK = 4;
-    private static final int BLACK_INVINCIBLE_TANK = 5;
-    private static final int SAND_INVINCIBLE_TANK = 6;
-    private static final int RED_INVINCIBLE_TANK = 7;
-    private static final int BLUE_INVINCIBLE_TANK = 8;
-    private static final int GREEN_INVINCIBLE_TANK = 9;
+    public static final int NUMBER_OF_TANK_STYLES = 5;
+    public static final int BLACK_TANK = 0;
+    public static final int SAND_TANK = 1;
+    public static final int RED_TANK = 2;
+    public static final int BLUE_TANK = 3;
+    public static final int GREEN_TANK = 4;
+    public static final int BLACK_INVINCIBLE_TANK = 5;
+    public static final int SAND_INVINCIBLE_TANK = 6;
+    public static final int RED_INVINCIBLE_TANK = 7;
+    public static final int BLUE_INVINCIBLE_TANK = 8;
+    public static final int GREEN_INVINCIBLE_TANK = 9;
 
     /**
      * IMAGES OF STYLES
@@ -51,12 +52,13 @@ public class Tank
     private static BufferedImage BLUE_INVINCIBLE_TANK_IMAGE;
     private static BufferedImage GREEN_INVINCIBLE_TANK_IMAGE;
 
+
     /**
      * FILE STRING
      */
     private static final String FOLDER_PATH = "data\\tanks\\standard\\";
     private static final String TYPE_OF_FILE = ".png";
-    public static final String INVINCIBLE_STRING = "Invincible";
+    private static final String INVINCIBLE_STRING = "Invincible";
 
     /* INSERTING IMAGES */
     static {
@@ -79,27 +81,59 @@ public class Tank
 
     public static final int heightOfTank = BLACK_TANK_IMAGE.getHeight();
     public static final int widthOfTank = BLACK_TANK_IMAGE.getWidth();
-    public static final double diameter = Math.sqrt(heightOfTank*2 + widthOfTank*2);
 
-    private int defaultHealth;
+    protected String name;
 
-    private int model;
-    private BufferedImage modelImage;
+    protected int defaultHealth;
 
-    //private Bullet shootedBullet;
+    protected int model;
+    protected BufferedImage modelImage;
 
-    private Area area;
+    protected static final Area DEFAULT_AREA = new Area(widthOfTank, heightOfTank);
+    protected Area area;
 
 
 
-    public Tank() {
+    public Tank(String name) {
+        this.name = name;
+        defaultHealth = DEFAULT_HEALTH_VALUE;
+        model = selectRandomModel();
+        styleFinder();
+        area = DEFAULT_AREA;
+    }
 
+    public Tank(String name, int model) {
+        this.name = name;
+        defaultHealth = DEFAULT_HEALTH_VALUE;
+        this.model = model;
+        styleFinder();
+        area = DEFAULT_AREA;
+    }
+
+    public Tank(int defaultHealth, String name) {
+        this.name = name;
+        this.defaultHealth = defaultHealth;
+        model = selectRandomModel();
+        styleFinder();
+        area = DEFAULT_AREA;
+    }
+
+    public Tank(String name, int defaultHealth, int model) {
+        this.name = name;
+        this.defaultHealth = defaultHealth;
+        this.model = model;
+        styleFinder();
+        area = DEFAULT_AREA;
     }
 
     public Tank(Tank tank) {
-
+        this(tank.name, tank.defaultHealth, tank.model);
     }
 
+
+    private int selectRandomModel() {
+        return new Random().nextInt(NUMBER_OF_TANK_STYLES);
+    }
 
     public void shootABullet() {
 
@@ -138,7 +172,15 @@ public class Tank
         return defaultHealth;
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public int getModel() {
+        return model;
+    }
 
-
+    public Area getArea() {
+        return area;
+    }
 }
