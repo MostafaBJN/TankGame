@@ -35,7 +35,7 @@ public class GameState {
 
         makeGameMap();
 
-        playingTank =
+        //playingTank =
         gameOver = false;
 
         //map = MapManager.getSelectedMap();

@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainMenu extends GUIBase {
@@ -125,7 +126,11 @@ public class MainMenu extends GUIBase {
                 //TODO PC PLAYING
             }
             if(e.getSource().equals(playMultiPlayerBtn)){
-                ArrayList<Preview> previewGame = MainClient.playMultiPlayer();
+                try {
+                    ArrayList<Preview> previewGame = MainClient.playMultiPlayer();
+                } catch (IOException | ClassNotFoundException exception) {
+                    exception.printStackTrace();
+                }
                 GUIManager.closeMainMenu();
                 GUIManager.openPlayMultiPlayerMenu();
             }

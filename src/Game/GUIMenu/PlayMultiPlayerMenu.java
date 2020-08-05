@@ -92,15 +92,15 @@ public class PlayMultiPlayerMenu extends GUIBase
         add(exitBtn);
 
         JButton AddBtn = new JButton("addGame");
-        exitBtn.setBounds(100,600,80,50);
-        exitBtn.addActionListener(new ActionListener() {
+        AddBtn.setBounds(100,600,80,50);
+        AddBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO Add game
-                MainClient
+                GUIManager.openAddGame();
+                GUIManager.closePlayMultiPlayerMenu();
             }
         });
-        add(exitBtn);
+        add(AddBtn);
 
     }
 

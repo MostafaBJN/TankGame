@@ -114,7 +114,7 @@ public class MainClient extends Command {
     /**
      * Add A game to server list
      */
-    public static void AddGame(Preview preview) throws IOException {
+    public static void addGame(Preview preview) throws IOException {
         outputStream.writeInt(MainMenu.ADD_GAME);
         outputStream.flush();
         outputStream.writeObject(preview);

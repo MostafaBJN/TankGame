@@ -27,7 +27,7 @@ public class Main {
         //SERVER
         Map map = Run.selectRandomMap();
         MapManager.selectMap(map.getName());
-        GUIManager.openPlayMultiPlayerMenu();
+        GUIManager.openSetting();
 //		// Initialize the global thread-pool
 //		ThreadPool.init();
 //

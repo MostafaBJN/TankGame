@@ -1,6 +1,8 @@
 package Game.GUIMenu;
 
 
+import Service.Player;
+
 import javax.swing.*;
 
 public class GUIManager {
@@ -8,9 +10,9 @@ public class GUIManager {
     private static LoginForm login;
     private static MainMenu mainMenu;
     private static PlayMultiPlayerMenu playMultiPlayerMenu;
-//    private static Setting setting;
+    private static AddGame addGame;
+    private static Setting setting;
 //    private static PlayWithPc playWithPc;
-//    private static PlayMultiPlayer playMultiPlayer;
 
     static {
         try {
@@ -49,6 +51,23 @@ public class GUIManager {
         playMultiPlayerMenu.closeGUI();
     }
 
+    public static void openAddGame(){
+        addGame = new AddGame("Add Game");
+        addGame.showGUI();
+    }
+
+    public static void closeAddGame(){
+        addGame.closeGUI();
+    }
+
+    public static void openSetting(){
+        setting = new Setting("Setting", new Player("",""));
+        setting.showGUI();
+    }
+
+    public static void closeSetting(){
+        setting.closeGUI();
+    }
 
 //    public static void open(){
 //         = new ("");
