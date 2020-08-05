@@ -69,8 +69,8 @@ public class Run {
             }
         });
     }
-
-    private Map selectRandomMap() {
+///////////////////////////////////
+    public static Map selectRandomMap() {
         ArrayList<Map> maps = MapManager.getMaps();
         int mapNumber = new Random().nextInt(maps.size());
         MapManager.selectMap(maps.get(mapNumber).getName());

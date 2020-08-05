@@ -175,7 +175,7 @@ public class RunGameServer extends Run {
                         commandMenu(command);
                     }
                     catch (java.io.EOFException | java.net.SocketException eofException) {
-                        System.out.println("Someone Left The Game");
+                        System.out.println("Someone Left The G");
                         connectionSockets.remove(connectionSocket);
                         countOfOnlinePlayers--;
                         break;

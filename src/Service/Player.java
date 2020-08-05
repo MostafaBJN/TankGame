@@ -15,8 +15,6 @@ public class Player extends Setting implements Serializable {
 
     // private ??? computer info (for checking player for no login screen)
 
-    private Socket socket;
-
     private Tank tank;
 
     public Player(String username, String password, boolean keepLogin) {
@@ -67,10 +65,6 @@ public class Player extends Setting implements Serializable {
 
     public boolean isKeepLogin() {
         return keepLogin;
-    }
-
-    public Socket getSocket() {
-        return socket;
     }
 
     public Tank getTank() {

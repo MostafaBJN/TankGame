@@ -7,6 +7,7 @@ public class GUIManager {
     //All GUIs
     private static LoginForm login;
     private static MainMenu mainMenu;
+    private static PlayMultiPlayerMenu playMultiPlayerMenu;
 //    private static Setting setting;
 //    private static PlayWithPc playWithPc;
 //    private static PlayMultiPlayer playMultiPlayer;
@@ -37,6 +38,15 @@ public class GUIManager {
 
     public static void closeMainMenu(){
         mainMenu.closeGUI();
+    }
+
+    public static void openPlayMultiPlayerMenu(){
+        playMultiPlayerMenu = new PlayMultiPlayerMenu();
+        playMultiPlayerMenu.showGUI();
+    }
+
+    public static void closePlayMultiPlayerMenu(){
+        playMultiPlayerMenu.closeGUI();
     }
 
 

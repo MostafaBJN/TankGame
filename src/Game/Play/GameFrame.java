@@ -65,7 +65,7 @@ public class GameFrame extends GUIBase {
 
 	
 	/**
-	 * Game rendering with triple-buffering using BufferStrategy.
+	 * G rendering with triple-buffering using BufferStrategy.
 	 */
 	public void render(GameState state) {
 		// Render single frame
@@ -112,7 +112,7 @@ public class GameFrame extends GUIBase {
 			}
 		}
 		for(PlayingTank playingTank:state.getGameMap().getPlayingTanks()){
-			g2d.drawImage(playingTank.getModelImage(), playingTank.getX()- (Tank.widthOfTank/2), (playingTank.getY()- Tank.heightOfTank/2), null);
+			g2d.drawImage(playingTank.getModelImage(), playingTank.getX() - (Tank.widthOfTank/2), (playingTank.getY() - Tank.heightOfTank/2), null);
 		}
 
 

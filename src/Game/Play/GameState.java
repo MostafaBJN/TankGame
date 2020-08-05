@@ -1,6 +1,7 @@
 package Game.Play;
 
 import Map.*;
+import Service.Player;
 import Thing.PlayingTank;
 import Thing.Tank;
 
@@ -17,6 +18,7 @@ import java.util.Random;
 public class GameState {
 
     private Map map;
+    private Player player;
     private GameMap gameMap;
     public boolean gameOver;
     private PlayingTank playingTank;
@@ -32,6 +34,8 @@ public class GameState {
         map = MapManager.getSelectedMap();
 
         makeGameMap();
+
+        playingTank =
         gameOver = false;
 
         //map = MapManager.getSelectedMap();

@@ -1,5 +1,6 @@
 package Service.Client;
 
+import Game.Run.Preview;
 import Service.Command;
 import Service.Player;
 import Game.GUIMenu.*;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class MainClient extends Command {
 
@@ -38,12 +40,12 @@ public class MainClient extends Command {
                 }
             } catch (IOException e) {
                 if(tries > 30){
-                    new GUIManager.ShowMessage("Game Server is not Available!\nTry Again Later", "Connection to Server", GUIManager.ShowMessage.ERROR).run();
+                    new GUIManager.ShowMessage("G Server is not Available!\nTry Again Later", "Connection to Server", GUIManager.ShowMessage.ERROR).run();
                     System.exit(-1);
                 }
                 else {
                     if(tries % 5 == 1)
-                        new Thread(new GUIManager.ShowMessage("Can't Connect to the Game Server\nTrying Again", "Connection to Server", GUIManager.ShowMessage.ERROR)).start();
+                        new Thread(new GUIManager.ShowMessage("Can't Connect to the G Server\nTrying Again", "Connection to Server", GUIManager.ShowMessage.ERROR)).start();
                 }
                 Thread.sleep(1000);
             }
@@ -54,7 +56,7 @@ public class MainClient extends Command {
             inputStream = new ObjectInputStream(socket.getInputStream());
         } catch (Exception e){
             e.printStackTrace();
-            new GUIManager.ShowMessage("Game Server is not Available!\nTry Again Later", "Connection to Server", GUIManager.ShowMessage.ERROR).run();
+            new GUIManager.ShowMessage("G Server is not Available!\nTry Again Later", "Connection to Server", GUIManager.ShowMessage.ERROR).run();
             System.exit(-1);
         }
         GUIManager.openLogin();
@@ -97,14 +99,38 @@ public class MainClient extends Command {
     }
 
     /**
+     *
+     *
+     * @return games servers available
+     */
+    public static ArrayList<Preview> playMultiPlayer() throws IOException, ClassNotFoundException {
+        outputStream.writeInt(MainMenu.GET_LIST_OF_MULTIPLAYER_GAMES);
+        outputStream.flush();
+        Object object = inputStream.readObject();
+        ArrayList<Preview> previews = (ArrayList<Preview>) object;
+        return previews;
+    }
+
+    /**
+     * Add A game to server list
+     */
+    public static void AddGame(Preview preview) throws IOException {
+        outputStream.writeInt(MainMenu.ADD_GAME);
+        outputStream.flush();
+        outputStream.writeObject(preview);
+        outputStream.flush();
+    }
+
+    /**
      * get Player from server list and add to loggedPlayer
      *
      * @return result of logging in
      */
     public static boolean loggingIn(Player player) throws IOException {
-        //TODO send a command to server which i want to get Player Info
         outputStream.writeInt(MainMenu.LOGGING_IN);
+        outputStream.flush();
         outputStream.writeObject(player);
+        outputStream.flush();
         Object object;
         try {
             object = inputStream.readObject();

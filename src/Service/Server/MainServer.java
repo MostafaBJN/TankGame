@@ -1,5 +1,6 @@
 package Service.Server;
 
+import Game.Run.Preview;
 import Service.Command;
 import Service.Player;
 import Game.GUIMenu.GUIManager;
@@ -17,7 +18,7 @@ public class MainServer extends Command {
     //all players info
     protected static ArrayList<Player> players;
     protected static int countOfOnlinePlayers;
-//    private static ArrayList<GameServer> gameServers;
+    private static ArrayList<Preview> gameServers;
     //private static ArrayList<Thread> playerThreads;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
@@ -215,7 +216,20 @@ public class MainServer extends Command {
                         exception.printStackTrace();
                     }
                     break;
-                //TODO MAKE A COMMAND MENU
+                case MainMenu.GET_LIST_OF_MULTIPLAYER_GAMES:
+                    outputStream.writeObject(gameServers);
+                    outputStream.flush();
+                    break;
+                case MainMenu.ADD_GAME:
+                    try {
+                        Object object = inputStream.readObject();
+                        Preview preview = (Preview) object;
+                        gameServers.add(preview);
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    //TODO MAKE A COMMAND MENU
 
             }
         }

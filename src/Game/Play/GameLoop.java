@@ -19,7 +19,7 @@ package Game.Play;
 public class GameLoop implements Runnable {
 	
 	/**
-	 * Frame Per Second.
+	 * PlayMultiPlayerMenu Per Second.
 	 * Higher is better, but any value above 24 is fine.
 	 */
 	public static final int FPS = 90;

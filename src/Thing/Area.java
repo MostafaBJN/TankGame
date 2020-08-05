@@ -1,7 +1,7 @@
 package Thing;
 
 /**
- * Area of Any Object In Game
+ * Area of Any Object In G
  */
 public class Area {
 
