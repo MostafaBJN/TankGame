@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Scanner;
 
 public class MapManager {
@@ -52,6 +53,12 @@ public class MapManager {
         }
     }
 
+    public static Map selectRandomMap() {
+        ArrayList<Map> maps = MapManager.getMaps();
+        int mapNumber = new Random().nextInt(maps.size());
+        MapManager.selectMap(maps.get(mapNumber).getName());
+        return MapManager.getSelectedMap();
+    }
 //
 //    public static ArrayList<String> loadMap(String nameOfFile) {
 //        File mapFile;

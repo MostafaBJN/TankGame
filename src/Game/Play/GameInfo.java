@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static Game.Run.Run.selectRandomMap;
+
 
 /**
  * Main Info of a game
@@ -69,7 +69,7 @@ public class GameInfo implements Serializable
         this.bulletPower = bulletPower;
         this.bWallHealth = bWallHealth;
         playerNeedToJoin = numberOfPlayers - numberOfPCPlayers - 1;
-        map = selectRandomMap();
+        map = MapManager.selectRandomMap();
         MapManager.selectMap(map.getName());
     }
 

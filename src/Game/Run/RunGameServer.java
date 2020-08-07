@@ -1,7 +1,10 @@
 package Game.Run;
 
+import Game.Play.GameInfo;
+import Service.Client.MainClient;
 import Service.Command;
 import Service.Player;
+import Service.Server.MainServer;
 //import com.company.Server.Player;
 
 import java.io.IOException;
@@ -14,51 +17,31 @@ import java.util.ArrayList;
 public class RunGameServer extends Run {
 
 
-    private int port;
     private ServerSocket serverSocket;
     private Socket connectionSocket;
+    Player gameMakerPlayer;
 
     protected ArrayList<Socket> connectionSockets;
 
     //all players info
-    protected ArrayList<Player> players;
     protected int countOfOnlinePlayers;
 
 
-    static int playingWithComputer;
-    static int grouhi;
-    int countOfPlayers;
-    static int league;
-    int livesOfTank;
-    int powerOfTir;
-//    int livesOfWall;
-    String nameOfGame = "";
-    ObjectOutputStream outputStream = null;
-    ObjectInputStream inputStream = null;
-    Player player;
-//    static Thing.Map map;
-//    static ArrayList<Player> group1 = null;
-//    static ArrayList<Player> group2 = null;
-//    static ArrayList<Player> allPlayers = null;
-//    static int countOfWinGroup1 = 0;
-//    static int countOfWinGroup2 = 0;
-
-    public RunGameServer(int port) throws IOException {
-        //TODO check port from server and add here
-        this.port = port;
-        //TODO Check Setting
+    public RunGameServer(GameInfo gameInfo) throws IOException {
+        super(gameInfo);
+        gameMakerPlayer = MainClient.getLoggedPlayer();
         startServer();
     }
 
     public void startServer() throws IOException {
-
         try {
-            serverSocket = new ServerSocket(port);
-            while(countOfOnlinePlayers < countOfPlayers) {
+            countOfOnlinePlayers = 1;
+            connectionSockets = new ArrayList<>();
+            serverSocket = new ServerSocket(gameInfo.getPort());
+            while (countOfOnlinePlayers < gameInfo.getNumberOfPlayers()) {
                 System.out.println("Online Players: " + countOfOnlinePlayers);
                 Socket connectionSocket = serverSocket.accept();
                 connectionSockets.add(connectionSocket);
-                System.out.println(connectionSocket.getRemoteSocketAddress());
                 countOfOnlinePlayers++;
                 Thread t = new Thread(new ClientCommand(connectionSocket, countOfOnlinePlayers));
                 t.start();
@@ -66,80 +49,6 @@ public class RunGameServer extends Run {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
-//
-//        player = new Player(connectionSocket,);
-//        Thread t = new Thread(player);
-//        try
-//        {
-//            outputStream.writeObject("you are first player");
-//
-//
-//            String user = (String) inputStream.readObject();
-//            String pass = (String) inputStream.readObject();
-//            player.setUserName(user);
-//            player.setPassword(pass);
-//
-//
-//            outputStream.writeObject("name bazi ra vared konid");
-//
-//
-//            nameOfGame = (String) inputStream.readObject();
-//
-//
-//            outputStream.writeObject("tedad jan tankHa ra vared konid.");
-//
-//
-//            String livesOfTankString = (String) inputStream.readObject();
-//            livesOfTank = Integer.parseInt(livesOfTankString);
-//
-//
-//            outputStream.writeObject("ghodrat tirHa ravared konid.");
-//
-//
-//            String powerOfTirString = (String) inputStream.readObject();
-//            powerOfTir = Integer.parseInt(powerOfTirString);
-//
-//
-//            outputStream.writeObject("tedad jan divarHa ra vared konid.");
-//
-//
-//            String playingWithComputerString = (String) inputStream.readObject();
-//            playingWithComputer = Integer.parseInt(playingWithComputerString);
-//
-//
-//            outputStream.writeObject("bazi ba digaran:Input 1  bazi ba computer:Input 2");
-//
-//
-//            playingWithComputerString = (String) inputStream.readObject();
-//            playingWithComputer = Integer.parseInt(playingWithComputerString);
-//
-//
-//            outputStream.writeObject("tak be tak:Input 1  grouhi:Input 2");
-//
-//
-//            String grouhiString = (String) inputStream.readObject();
-//            grouhi = Integer.parseInt(grouhiString);
-//
-//
-//            outputStream.writeObject("tedade bazikonan ra vared konid");
-//
-//
-//            String countOfPlayersString = (String) inputStream.readObject();
-//            countOfPlayers = Integer.parseInt(countOfPlayersString);
-//
-//
-//            outputStream.writeObject("tedade bazihaye league ra vared konid");
-//
-//
-//            String leagueString = (String) inputStream.readObject();
-//            league = Integer.parseInt(leagueString);
-//        }
-//        catch (IOException | ClassNotFoundException e)
-//        {
-//            e.printStackTrace();
-//        }
-//        t.start();
     }
 
 
@@ -173,14 +82,13 @@ public class RunGameServer extends Run {
                         commandMenu(command);
                     }
                     catch (java.io.EOFException | java.net.SocketException eofException) {
-                        System.out.println("Someone Left The G");
+                        System.out.println("Someone Left The Game");
                         connectionSockets.remove(connectionSocket);
                         countOfOnlinePlayers--;
                         break;
                     }
-
                 }
-            } catch (IOException exception) {
+            } catch (IOException | ClassNotFoundException exception) {
                 exception.printStackTrace();
             } finally {
                 try {
@@ -191,14 +99,16 @@ public class RunGameServer extends Run {
             }
         }
 
-        private void commandMenu(int command) throws IOException {
+        private void commandMenu(int command) throws IOException, ClassNotFoundException {
             switch (command){
-                case PlayGame.SEND_GAME_STATE:
+                case PlayGame.SEND_PLAYER_INFO_TO_GAME_SERVER:
+                    Object object = inputStream.readObject();
+                    if(object instanceof Player) {
+                        Player player = (Player) object;
+                        players.add(player);
+                    }
                     break;
-                case PlayGame.GET_GAME_STATE:
-                    break;
-                case MainMenu.LOGGING_IN:
-                    break;
+
                 //TODO MAKE A COMMAND MENU
 
             }

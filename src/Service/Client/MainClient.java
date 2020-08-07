@@ -27,7 +27,7 @@ public class MainClient extends Command {
         MapManager.loadAllMaps();
 
         //extra
-        MapManager.selectMap(Run.selectRandomMap().getName());
+        MapManager.selectMap(MapManager.selectRandomMap().getName());
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

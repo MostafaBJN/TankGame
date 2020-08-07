@@ -122,7 +122,7 @@ public class LoginForm extends GUIBase {
                 }
             }
             else if (e.getSource().equals(passwordField)) {
-                if (passwordField.getText().equals(SAMPLE_ENTER_PASSWORD_MASSAGE)) {
+                if (new String(passwordField.getPassword()).equals(SAMPLE_ENTER_PASSWORD_MASSAGE)) {
                     passwordField.setText("");
                 }
             }

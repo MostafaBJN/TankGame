@@ -1,10 +1,13 @@
 package Game.Run;
 
+import Service.Client.MainClient;
 import Thing.Map.Map;
 import Thing.Map.MapManager;
 import Service.Player;
 
 import Game.Play.*;
+import Thing.PlayingTank;
+import Thing.Tank;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,24 +16,29 @@ import java.util.Random;
 public class Run {
 
 
-    private ArrayList<Player> players;
-    private GameMap gameMap;
+    protected ArrayList<Player> players;
+    protected GameInfo gameInfo;
+    protected GameMap gameMap;
 
 
 
-    public Run() {
-        // Initialize the global thread-pool
+    public Run(GameInfo gameInfo) {
         ThreadPool.init();
 
         // Show the game menu ...
-
+        this.gameInfo = gameInfo;
+        players = new ArrayList<>();
 
         //SERVER
-
         //CLIENT
 
 
         // After the player clicks 'PLAY' ...
+
+    }
+
+
+    public void runTheGame() {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -39,16 +47,13 @@ public class Run {
         });
     }
 
-///////////////////////////////////
-    public static Map selectRandomMap() {
-        ArrayList<Map> maps = MapManager.getMaps();
-        int mapNumber = new Random().nextInt(maps.size());
-        MapManager.selectMap(maps.get(mapNumber).getName());
-        return MapManager.getSelectedMap();
-    }
-
-
     private void gameStart() {
+        ArrayList<Tank> tanks = new ArrayList<>();
+        for (Player player:players) {
+            tanks.add(player.getTank());
+        }
+        gameMap = new GameMap(gameInfo.getMap(),tanks);
+
         GameFrame gameFrame = new GameFrame("Tank Trouble");
         gameFrame.setLocationRelativeTo(null);
         gameFrame.setVisible(true);

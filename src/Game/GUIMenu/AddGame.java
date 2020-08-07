@@ -1,6 +1,7 @@
 package Game.GUIMenu;
 
 import Game.Play.GameInfo;
+import Game.Run.RunGameServer;
 import Service.Client.MainClient;
 
 import javax.swing.*;
@@ -180,6 +181,13 @@ public class AddGame extends GUIBase{
 
                 try {
                     MainClient.addGame(gameInfo);
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
+
+                //TODO RUN GAME
+                try {
+                    RunGameServer gameServer = new RunGameServer(gameInfo);
                 } catch (IOException exception) {
                     exception.printStackTrace();
                 }

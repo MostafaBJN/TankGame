@@ -1,6 +1,7 @@
 package Game.GUIMenu;
 
 import Game.Play.GameInfo;
+import Game.Run.RunGameClient;
 import Service.Client.MainClient;
 import Thing.Map.Ground;
 import Thing.Map.Map;
@@ -29,28 +30,28 @@ public class PlayMultiPlayerMenu extends GUIBase
 
 
         JTabbedPane tab = new JTabbedPane();
-        for (GameInfo game : allGames) {
+        for (GameInfo gameInfo : allGames) {
 
-            JLabel nameOfGame = new JLabel("Name : " + game.getName());
+            JLabel nameOfGame = new JLabel("Name : " + gameInfo.getName());
 
-            JLabel teamPlay = new JLabel("Team Play : " + game.isTeamGame());
+            JLabel teamPlay = new JLabel("Team Play : " + gameInfo.isTeamGame());
 
-            JLabel numberOfPlayers = new JLabel("Number Of Players : " + game.getNumberOfPlayers());
+            JLabel numberOfPlayers = new JLabel("Number Of Players : " + gameInfo.getNumberOfPlayers());
 
-            JLabel leagueGame = new JLabel("League Game : " + game.isLeaguePlay());
+            JLabel leagueGame = new JLabel("League Game : " + gameInfo.isLeaguePlay());
 
-            JLabel countOfLeague = new JLabel("Number Of Rounds : " + game.getNumberOfGames());
+            JLabel countOfLeague = new JLabel("Number Of Rounds : " + gameInfo.getNumberOfGames());
 
-            JLabel joinedPlayer = new JLabel("Joined Players : " + (game.getNumberOfPlayers() - game.getPlayerNeedToJoin()));
+            JLabel joinedPlayer = new JLabel("Joined Players : " + (gameInfo.getNumberOfPlayers() - gameInfo.getPlayerNeedToJoin()));
 
-            JLabel livesOfTank = new JLabel("Tank Health : " + game.getTankHealth());
+            JLabel livesOfTank = new JLabel("Tank Health : " + gameInfo.getTankHealth());
 
-            JLabel livesOfWall = new JLabel("Breakable Wall Health : " + game.getBWallHealth());
+            JLabel livesOfWall = new JLabel("Breakable Wall Health : " + gameInfo.getBWallHealth());
 
-            JLabel powerOfBullet = new JLabel("Bullet Power : " + game.getBulletPower());
+            JLabel powerOfBullet = new JLabel("Bullet Power : " + gameInfo.getBulletPower());
 
-            JLabel mapTemple = new JLabel(resize(game.getMap(), game.getMap().getVisualWidth()/4,game.getMap().getVisualHeight()/4));//TODO:empty Label
-            mapTemple.setSize(game.getMap().getVisualWidth()/4,game.getMap().getVisualHeight()/4);
+            JLabel mapTemple = new JLabel(resize(gameInfo.getMap(), gameInfo.getMap().getVisualWidth()/4, gameInfo.getMap().getVisualHeight()/4));//TODO:empty Label
+            mapTemple.setSize(gameInfo.getMap().getVisualWidth()/4, gameInfo.getMap().getVisualHeight()/4);
 
             JButton connectBtn = new JButton("Connect");
             int buttonWidth = connectBtn.getPreferredSize().width;
@@ -60,6 +61,13 @@ public class PlayMultiPlayerMenu extends GUIBase
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     //TODO Run Game
+                    if (!RunGameClient.connectToGame(gameInfo.getPort())) {
+                        GUIManager.openMainMenu();
+                        GUIManager.closePlayMultiPlayerMenu();
+                    }
+                    else {
+                        new RunGameClient(gameInfo);
+                    }
                 }
             });
 
@@ -84,7 +92,7 @@ public class PlayMultiPlayerMenu extends GUIBase
             panel.add(list, BorderLayout.CENTER);
             panel.add(button, BorderLayout.SOUTH);
 
-            tab.add(game.getName(), panel);
+            tab.add(gameInfo.getName(), panel);
         }
 
 
