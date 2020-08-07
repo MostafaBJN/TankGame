@@ -1,9 +1,7 @@
 package Game.Run;
 
-import Map.Map;
 import Service.Command;
 import Service.Player;
-import Service.Server.MainServer;
 //import com.company.Server.Player;
 
 import java.io.IOException;
@@ -38,7 +36,7 @@ public class RunGameServer extends Run {
     ObjectOutputStream outputStream = null;
     ObjectInputStream inputStream = null;
     Player player;
-//    static Map map;
+//    static Thing.Map map;
 //    static ArrayList<Player> group1 = null;
 //    static ArrayList<Player> group2 = null;
 //    static ArrayList<Player> allPlayers = null;

@@ -1,7 +1,9 @@
 package Thing;
 
 
-public class PlayingTank extends Tank {
+import java.io.Serializable;
+
+public class PlayingTank extends Tank implements Serializable {
 
     private int health;
 

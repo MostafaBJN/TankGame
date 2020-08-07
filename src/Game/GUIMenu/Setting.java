@@ -13,6 +13,8 @@ public class Setting extends GUIBase {
 
     private JButton backBtn;
 
+    private JButton changeTankBtn;
+
     private JTextField playedTime;
     private JTextField username;
     private JTextField onlineWins;
@@ -41,6 +43,8 @@ public class Setting extends GUIBase {
     private JLabel onlineLosesLabel;
     private JLabel offlineLosesLabel;
     private JLabel tankImage;
+    private JLabel tankImageLabel;
+    private JLabel changeTankLabel;
 
     protected Setting(String title, Player player) {
         super(title);
@@ -85,7 +89,13 @@ public class Setting extends GUIBase {
         bWallHealthLabel = new JLabel("Breakable Wall Health :");
         bWallHealth = new JTextField();
 
+
+        tankImageLabel = new JLabel("Your Tank :");
         tankImage = new JLabel();
+
+        changeTankLabel = new JLabel("Change Tank Model");
+        changeTankBtn = new JButton("Tank Model");
+
 
         infoPanel = new JPanel(new GridLayout(9, 2, 5, 5));
         infoPanel.add(playedTimeLabel);

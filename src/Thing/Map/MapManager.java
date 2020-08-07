@@ -1,4 +1,4 @@
-package Map;
+package Thing.Map;
 
 import javax.swing.*;
 import java.io.*;
@@ -25,7 +25,7 @@ public class MapManager {
                 return;
             }
         }
-        JOptionPane.showMessageDialog(null, name + " Does Not Exist! ", "Selecting Map", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, name + " Does Not Exist! ", "Selecting Thing.Map", JOptionPane.ERROR_MESSAGE);
     }
 
     public static void loadAllMaps() {
@@ -88,7 +88,7 @@ public class MapManager {
     public static void makeLoadedMap(String name, ArrayList<String> mapIntsString) {
         //no map loaded
         if(mapIntsString == null) {
-            JOptionPane.showMessageDialog(null, "No Map Loaded", "Loading Map", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "No Thing.Map Loaded", "Loading Thing.Map", JOptionPane.ERROR_MESSAGE);
             return;
         }
 

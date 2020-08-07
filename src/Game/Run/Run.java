@@ -1,12 +1,10 @@
 package Game.Run;
 
-import Map.Map;
-import Map.MapManager;
+import Thing.Map.Map;
+import Thing.Map.MapManager;
 import Service.Player;
 
 import Game.Play.*;
-import Thing.PlayingTank;
-import Thing.Tank;
 
 import java.awt.*;
 import java.util.ArrayList;

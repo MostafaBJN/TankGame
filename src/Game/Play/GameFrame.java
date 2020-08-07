@@ -2,8 +2,8 @@
 package Game.Play;
 
 import Game.GUIMenu.GUIBase;
-import Map.Ground;
-import Map.MapManager;
+import Thing.Map.Ground;
+import Thing.Map.MapManager;
 import Thing.PlayingTank;
 import Thing.Tank;
 
@@ -112,7 +112,7 @@ public class GameFrame extends GUIBase {
 			}
 		}
 		for(PlayingTank playingTank:state.getGameMap().getPlayingTanks()){
-			g2d.drawImage(playingTank.getModelImage(), playingTank.getX() - (Tank.widthOfTank/2), (playingTank.getY() - Tank.heightOfTank/2), null);
+			g2d.drawImage(playingTank.getStyleImage(), playingTank.getX() - (Tank.widthOfTank/2), (playingTank.getY() - Tank.heightOfTank/2), null);
 		}
 
 

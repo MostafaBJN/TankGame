@@ -13,6 +13,9 @@ public class Command {
         public static final int LOGGING_IN = 2;
         public static final int GET_LIST_OF_MULTIPLAYER_GAMES = 3;
         public static final int ADD_GAME = 4;
+        public static final int GET_PLAYER = 5;
+        public static final int SEND_PLAYER = 6;
+//        public static final int ;
     }
 
     public static class Login {

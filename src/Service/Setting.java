@@ -1,10 +1,8 @@
 package Service;
 
-import Map.BreakableWall;
+import Thing.Map.BreakableWall;
 import Thing.Bullet;
 import Thing.Tank;
-
-import java.awt.image.BufferedImage;
 
 /**
  * Setting Data of a Player

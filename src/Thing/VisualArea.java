@@ -1,6 +1,8 @@
 package Thing;
 
-public class VisualArea extends Area {
+import java.io.Serializable;
+
+public class VisualArea extends Area implements Serializable {
 
     private int upLeftCorner;
     private int corner1;

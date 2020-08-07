@@ -1,4 +1,4 @@
-package Map;
+package Thing.Map;
 
 /**
  * Area of Any Object In G

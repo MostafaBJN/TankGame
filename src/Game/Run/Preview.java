@@ -1,6 +1,6 @@
 package Game.Run;
 
-import Map.*;
+import Thing.Map.*;
 
 public class Preview
 {

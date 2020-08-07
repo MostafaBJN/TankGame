@@ -1,6 +1,6 @@
 package Game.Play;
 
-import Map.*;
+import Thing.Map.*;
 import Thing.Area;
 import Thing.Bullet;
 import Thing.PlayingTank;

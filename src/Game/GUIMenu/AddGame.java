@@ -20,6 +20,7 @@ public class AddGame extends GUIBase{
     private JTextField tankHealth;
     private JTextField bulletPower;
     private JTextField bWallHealth;
+    private JTextField numberOfGame;
 
     private JCheckBox teamGame;
     private JCheckBox finishGame;
@@ -34,6 +35,7 @@ public class AddGame extends GUIBase{
     private JLabel tankHealthLabel;
     private JLabel bulletPowerLabel;
     private JLabel bWallHealthLabel;
+    private JLabel numberOfGameLabel;
 
     protected AddGame(String title) {
         super(title);
@@ -45,6 +47,15 @@ public class AddGame extends GUIBase{
 
         nameLabel = new JLabel("Name :");
         name = new JTextField();
+
+        personLimitLabel = new JLabel("Player Number :");
+        personLimit = new JTextField();
+
+        personLimitLabel = new JLabel("Player Limit :");
+        personLimit = new JTextField();
+
+        personLimitLabel = new JLabel("Player Limit :");
+        personLimit = new JTextField();
 
         personLimitLabel = new JLabel("Player Limit :");
         personLimit = new JTextField();
@@ -62,7 +73,12 @@ public class AddGame extends GUIBase{
         teamGame = new JCheckBox("Team Game", false);
         finishGame = new JCheckBox("League Game", false);
 
-        infoPanel = new JPanel(new GridLayout(6, 2, 5, 5));
+        numberOfGameLabel = new JLabel("Number Of Games :");
+        numberOfGame = new JTextField();
+        numberOfGameLabel.setVisible(false);
+        numberOfGame.setVisible(false);
+
+        infoPanel = new JPanel(new GridLayout(7, 2, 5, 5));
         infoPanel.add(nameLabel);
         infoPanel.add(name);
         infoPanel.add(personLimitLabel);
@@ -75,7 +91,8 @@ public class AddGame extends GUIBase{
         infoPanel.add(bWallHealth);
         infoPanel.add(teamGame);
         infoPanel.add(finishGame);
-
+        infoPanel.add(numberOfGameLabel);
+        infoPanel.add(numberOfGame);
 
 
 

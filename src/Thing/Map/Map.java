@@ -1,6 +1,8 @@
-package Map;
+package Thing.Map;
 
 import java.util.ArrayList;
+
+import static Thing.Image.Ground.*;
 
 public class Map {
 
@@ -59,31 +61,31 @@ public class Map {
 
                 //roads
                 if (a % 2 == 1 && b % 2 == 1) {
-                    if(type == Ground.BREAKABLE_WALL)
-                        horizonGrounds.add(new BreakableWall(type, Ground.SQUARE, b, a));
+                    if(type == BREAKABLE_WALL)
+                        horizonGrounds.add(new BreakableWall(type, SQUARE, b, a));
                     else
-                        horizonGrounds.add(new Ground(type, Ground.SQUARE, b, a));
+                        horizonGrounds.add(new Ground(type, SQUARE, b, a));
                 }
                 //horizontal Wall
                 else if (a % 2 == 1) {
-                    if(type == Ground.BREAKABLE_WALL)
-                        horizonGrounds.add(new BreakableWall(type, Ground.HORIZON_LINE, b, a));
+                    if(type == BREAKABLE_WALL)
+                        horizonGrounds.add(new BreakableWall(type, HORIZON_LINE, b, a));
                     else
-                        horizonGrounds.add(new Ground(type, Ground.HORIZON_LINE, b, a));
+                        horizonGrounds.add(new Ground(type, HORIZON_LINE, b, a));
                 }
                 //Vertical Wall
                 else if (b % 2 == 1) {
-                    if(type == Ground.BREAKABLE_WALL)
-                        horizonGrounds.add(new BreakableWall(type, Ground.VERTICAL_LINE, b, a));
+                    if(type == BREAKABLE_WALL)
+                        horizonGrounds.add(new BreakableWall(type, VERTICAL_LINE, b, a));
                     else
-                        horizonGrounds.add(new Ground(type, Ground.VERTICAL_LINE, b, a));
+                        horizonGrounds.add(new Ground(type, VERTICAL_LINE, b, a));
                 }
                 //Corners
                 else {
-                    if(type == Ground.BREAKABLE_WALL)
-                        horizonGrounds.add(new BreakableWall(type, Ground.CORNER, b, a));
+                    if(type == BREAKABLE_WALL)
+                        horizonGrounds.add(new BreakableWall(type, CORNER, b, a));
                     else
-                        horizonGrounds.add(new Ground(type, Ground.CORNER, b, a));
+                        horizonGrounds.add(new Ground(type, CORNER, b, a));
                 }
 
                 groundsOneLineList.add(horizonGrounds.get(a));
@@ -102,7 +104,7 @@ public class Map {
                 horizontal = a;
                 vertical = b - 1;
                 if(vertical < 0)
-                    up = new Ground(Ground.UNKNOWN, Ground.OUT_OF_MAP, vertical, horizontal);
+                    up = new Ground(UNKNOWN, OUT_OF_MAP, vertical, horizontal);
                 else
                     up = grounds.get(vertical).get(horizontal);
 
@@ -110,7 +112,7 @@ public class Map {
                 horizontal = a + 1;
                 vertical = b;
                 if(horizontal >= width)
-                    right = new Ground(Ground.UNKNOWN, Ground.OUT_OF_MAP, vertical, horizontal);
+                    right = new Ground(UNKNOWN, OUT_OF_MAP, vertical, horizontal);
                 else
                     right = grounds.get(vertical).get(horizontal);
 
@@ -118,7 +120,7 @@ public class Map {
                 horizontal = a;
                 vertical = b + 1;
                 if(vertical >= height)
-                    down = new Ground(Ground.UNKNOWN, Ground.OUT_OF_MAP, vertical, horizontal);
+                    down = new Ground(UNKNOWN, OUT_OF_MAP, vertical, horizontal);
                 else
                     down = grounds.get(vertical).get(horizontal);
 
@@ -126,7 +128,7 @@ public class Map {
                 horizontal = a - 1;
                 vertical = b ;
                 if(horizontal < 0)
-                    left = new Ground(Ground.UNKNOWN, Ground.OUT_OF_MAP, vertical, horizontal);
+                    left = new Ground(UNKNOWN, OUT_OF_MAP, vertical, horizontal);
                 else
                     left = grounds.get(vertical).get(horizontal);
 

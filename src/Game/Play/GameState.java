@@ -1,6 +1,6 @@
 package Game.Play;
 
-import Map.*;
+import Thing.Map.*;
 import Service.Player;
 import Thing.PlayingTank;
 import Thing.Tank;
@@ -13,7 +13,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class GameState {
 

@@ -1,16 +1,10 @@
 /*** In The Name of Allah ***/
-package Game.Play;
+package Game;
 
-import Game.GUIMenu.GUIManager;
-import Game.GUIMenu.PlayMultiPlayerMenu;
 import Game.Run.Run;
-import Map.Map;
-import Map.MapManager;
 
 
-import java.awt.*;
 import java.io.IOException;
-import javax.swing.JFrame;
 
 /**
  * Program start.
@@ -20,14 +14,14 @@ import javax.swing.JFrame;
 public class Main {
 	
     public static void main(String[] args) throws IOException {
-    	//new Run();
+    	new Run();
         // Show the game menu ...
-        MapManager.loadAllMaps();
+//        MapManager.loadAllMaps();
 
         //SERVER
-        Map map = Run.selectRandomMap();
-        MapManager.selectMap(map.getName());
-        GUIManager.openSetting();
+//        Thing.Map map = Run.selectRandomMap();
+//        MapManager.selectMap(map.getName());
+//        GUIManager.openSetting();
 //		// Initialize the global thread-pool
 //		ThreadPool.init();
 //

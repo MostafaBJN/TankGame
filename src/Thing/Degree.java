@@ -1,8 +1,9 @@
 package Thing;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Degree {
+public class Degree implements Serializable {
     private static final int TURNING_DEGREE_VALUE = 18;
     private static final int DEFAULT_ANGLE = 0;
     private static final int FULL_CIRCLE_DEGREE = 360;

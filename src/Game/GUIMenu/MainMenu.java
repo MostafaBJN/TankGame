@@ -120,21 +120,23 @@ public class MainMenu extends GUIBase {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(e.getSource().equals(settingBtn)){
-                //TODO OPEN SETTING OPTIONS
+                GUIManager.openSetting();
+                GUIManager.closeMainMenu();
             }
-            if(e.getSource().equals(playWithPcBtn)){
-                //TODO PC PLAYING
+            else if(e.getSource().equals(playWithPcBtn)){
+                GUIManager.closeMainMenu();
+                GUIManager.openPlayWithPc();
             }
-            if(e.getSource().equals(playMultiPlayerBtn)){
-                try {
-                    ArrayList<Preview> previewGame = MainClient.playMultiPlayer();
-                } catch (IOException | ClassNotFoundException exception) {
-                    exception.printStackTrace();
-                }
+            else if(e.getSource().equals(playMultiPlayerBtn)){
+//                try {
+//                    ArrayList<Preview> previewGame = MainClient.playMultiPlayer();
+//                } catch (IOException | ClassNotFoundException exception) {
+//                    exception.printStackTrace();
+//                }
                 GUIManager.closeMainMenu();
                 GUIManager.openPlayMultiPlayerMenu();
             }
-            if(e.getSource().equals(logOutBtn)){
+            else if(e.getSource().equals(logOutBtn)){
                 MainClient.logout();
                 GUIManager.closeMainMenu();
                 GUIManager.openLogin();

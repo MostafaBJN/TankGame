@@ -12,7 +12,7 @@ public class GUIManager {
     private static PlayMultiPlayerMenu playMultiPlayerMenu;
     private static AddGame addGame;
     private static Setting setting;
-//    private static PlayWithPc playWithPc;
+    private static PlayWithPc playWithPc;
 
     static {
         try {
@@ -69,14 +69,15 @@ public class GUIManager {
         setting.closeGUI();
     }
 
-//    public static void open(){
-//         = new ("");
-//        .showGUI();
-//    }
-//
-//    public static void close(){
-//        closeGUI();
-//    }
+    public static void openPlayWithPc(){
+        playWithPc = new PlayWithPc("Play With Pc");
+        playWithPc.showGUI();
+    }
+
+    public static void closePlayWithPc(){
+        playWithPc.closeGUI();
+    }
+
 
     public static class ShowMessage implements Runnable{
 

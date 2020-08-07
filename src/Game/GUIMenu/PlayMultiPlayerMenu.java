@@ -1,9 +1,8 @@
 package Game.GUIMenu;
 
 import Game.Run.Preview;
-import Map.Ground;
-import Map.Map;
-import Service.Client.MainClient;
+import Thing.Map.Ground;
+import Thing.Map.Map;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,65 +22,74 @@ public class PlayMultiPlayerMenu extends GUIBase
         allGames.add(new Preview("grbg","44","55","66","78","--","vgfe"));
         allGames.add(new Preview("fff","46hh","2d","6u","5y3","g53","43f"));
 
-        setSize(400,700);
-        setLayout(null);
+
         JTabbedPane tab = new JTabbedPane();
         for (Preview game : allGames) {
 
-            JLabel nameOfGame = new JLabel("nameOfGame=" + game.getNameOfGame());
-            nameOfGame.setBounds(10,10,200,30);
+            JLabel nameOfGame = new JLabel("Name : " + game.getNameOfGame());
 
-            JLabel groupingOr1By1 = new JLabel("groupingOr1By1=" + game.getGroupingOr1By1());
-            groupingOr1By1.setBounds(10,50,200,30);
+            JLabel groupingOr1By1 = new JLabel("Team Play : " + game.getGroupingOr1By1());
 
-            JLabel playingWithComputerOrPerson = new JLabel("playingWithComputerOrPerson=" + game.getPlayingWithComputerOrPerson());
-            playingWithComputerOrPerson.setBounds(10,90,200,30);
+            JLabel playingWithComputerOrPerson = new JLabel("Robots Allowed : " + game.getPlayingWithComputerOrPerson());
 
-            JLabel countOfLeague = new JLabel("countOfLeague=" + game.getCountOfLeague());
-            countOfLeague.setBounds(10,130,200,30);
+            JLabel minOfPlayer = new JLabel("Player Number : " );
 
-            JLabel livesOfTank = new JLabel("livesOfTank=" + game.getLivesOfTank());
-            livesOfTank.setBounds(10,170,200,30);
+            JLabel joinedPlayer = new JLabel("Joined Players : " );
 
-            JLabel livesOfWall = new JLabel("livesOfWall" + game.getLivesOfWall());
-            livesOfWall.setBounds(10,210,200,30);
+            JLabel countOfLeague = new JLabel("Number Of Rounds : " + game.getCountOfLeague());
 
-            JLabel powerOfBullet = new JLabel("powerOfBullet=" + game.getPowerOfBullet());
-            powerOfBullet.setBounds(10,250,200,30);
-
-            JLabel mapTemple = new JLabel();//TODO:empty Label
-            mapTemple.setBounds(10,290,game.getMap().getVisualWidth()/5,game.getMap().getVisualHeight()/5);
-            mapTemple.setIcon(resize(game.getMap(), game.getMap().getVisualWidth()/5,game.getMap().getVisualHeight()/5));
+            JLabel livesOfTank = new JLabel("Tank Health : " + game.getLivesOfTank());
 
 
-            JButton exitBtn = new JButton("Connect");
-            exitBtn.setBounds(10,330 + game.getMap().getVisualHeight()/5 + 10,80,50);
-            exitBtn.addActionListener(new ActionListener() {
+            JLabel livesOfWall = new JLabel("Breakable Wall Health : " + game.getLivesOfWall());
+
+
+            JLabel powerOfBullet = new JLabel("Bullet Power : " + game.getPowerOfBullet());
+
+
+            JLabel mapTemple = new JLabel(resize(game.getMap(), game.getMap().getVisualWidth()/4,game.getMap().getVisualHeight()/4));//TODO:empty Label
+            mapTemple.setSize(game.getMap().getVisualWidth()/4,game.getMap().getVisualHeight()/4);
+
+            JButton connectBtn = new JButton("Connect");
+            int buttonWidth = connectBtn.getPreferredSize().width;
+            int buttonHeight = connectBtn.getPreferredSize().height + 10;
+            connectBtn.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+            connectBtn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     //TODO Run Game
                 }
             });
-            add(exitBtn);
 
-            JPanel panel = new JPanel();
-            panel.setLayout(null);
-            panel.add(nameOfGame);
-            panel.add(groupingOr1By1);
-            panel.add(playingWithComputerOrPerson);
-            panel.add(countOfLeague);
-            panel.add(livesOfTank);
-            panel.add(livesOfWall);
-            panel.add(powerOfBullet);
-            panel.add(mapTemple);
-            tab.setBounds(0, 0, 800,600);
+            JPanel list = new JPanel(new GridLayout(9,0,10,10));
+            list.add(nameOfGame);
+            list.add(groupingOr1By1);
+            list.add(minOfPlayer);
+            list.add(joinedPlayer);
+            list.add(playingWithComputerOrPerson);
+            list.add(countOfLeague);
+            list.add(livesOfTank);
+            list.add(livesOfWall);
+            list.add(powerOfBullet);
+
+            JPanel picture = new JPanel(new BorderLayout(10,10));
+            JPanel button = new JPanel(new BorderLayout(10,10));
+            picture.add(mapTemple, BorderLayout.CENTER);
+            button.add(connectBtn, BorderLayout.CENTER);
+
+            JPanel panel = new JPanel(new BorderLayout(10,10));
+            panel.add(picture, BorderLayout.NORTH);
+            panel.add(list, BorderLayout.CENTER);
+            panel.add(button, BorderLayout.SOUTH);
+
             tab.add(game.getNameOfGame(), panel);
-
         }
-        add(tab);
+
 
         JButton exitBtn = new JButton("Menu");
-        exitBtn.setBounds(10,600,80,50);
+        int buttonWidth = exitBtn.getPreferredSize().width;
+        int buttonHeight = exitBtn.getPreferredSize().height + 10;
+        exitBtn.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
         exitBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -89,10 +97,11 @@ public class PlayMultiPlayerMenu extends GUIBase
                 GUIManager.openMainMenu();
             }
         });
-        add(exitBtn);
 
-        JButton AddBtn = new JButton("addGame");
-        AddBtn.setBounds(100,600,80,50);
+        JButton AddBtn = new JButton("Add Game");
+        buttonWidth = AddBtn.getPreferredSize().width;
+        buttonHeight = AddBtn.getPreferredSize().height + 10;
+        AddBtn.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
         AddBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -100,8 +109,20 @@ public class PlayMultiPlayerMenu extends GUIBase
                 GUIManager.closePlayMultiPlayerMenu();
             }
         });
-        add(AddBtn);
 
+        JPanel buttonPanel = new JPanel(new GridLayout(0,2,5,5));
+        buttonPanel.add(AddBtn);
+        buttonPanel.add(exitBtn);
+
+
+        JPanel mainPanel = new JPanel(new BorderLayout(5,5));
+        //mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        mainPanel.add(tab, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        add(mainPanel);
+
+        pack();
     }
 
 
@@ -115,7 +136,7 @@ public class PlayMultiPlayerMenu extends GUIBase
 
         for(ArrayList<Ground> listGround:map.getGrounds()){
             for(Ground ground:listGround){
-                g2d.drawImage(ground.getStyleImage(), ground.getStartHorizontalVisualPointInMap()+6, ground.getStartVerticalVisualPointInMap()+31,null);
+                g2d.drawImage(ground.getStyleImage(), ground.getStartHorizontalVisualPointInMap(), ground.getStartVerticalVisualPointInMap(),null);
             }
         }
         g2d.dispose();

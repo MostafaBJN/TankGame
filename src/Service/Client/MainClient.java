@@ -1,6 +1,9 @@
 package Service.Client;
 
 import Game.Run.Preview;
+import Game.Run.Run;
+import Thing.Map.Map;
+import Thing.Map.MapManager;
 import Service.Command;
 import Service.Player;
 import Game.GUIMenu.*;
@@ -21,6 +24,12 @@ public class MainClient extends Command {
     private static Player loggedPlayer;
 
     public static void main(String[] args) throws InterruptedException, IOException {
+
+        MapManager.loadAllMaps();
+
+        Map map = Run.selectRandomMap();
+        MapManager.selectMap(map.getName());
+        //GUIManager.openSetting();
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -98,8 +107,8 @@ public class MainClient extends Command {
         return result;
     }
 
-    /**
-     *
+    /*
+     * get available servers from main server
      *
      * @return games servers available
      */
@@ -153,6 +162,14 @@ public class MainClient extends Command {
 
     public static void logout() {
         loggedPlayer = null;
+    }
+
+    public static void sendPlayerInfo() {
+
+    }
+
+    public static Player receivePlayerInfo(String username) {
+        return new Player(username, "");
     }
 
     public static Socket getSocket() {

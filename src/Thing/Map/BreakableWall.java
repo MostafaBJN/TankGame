@@ -1,4 +1,4 @@
-package Map;
+package Thing.Map;
 
 import javax.swing.*;
 

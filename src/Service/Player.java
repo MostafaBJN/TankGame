@@ -4,7 +4,6 @@ import Thing.Tank;
 
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
-import java.net.Socket;
 import java.util.Objects;
 
 public class Player extends Setting implements Serializable {
@@ -33,7 +32,7 @@ public class Player extends Setting implements Serializable {
     }
 
     public BufferedImage getPictureOfTank() {
-        return tank.getModelImage();
+        return tank.getStyleImage();
     }
 
     @Override
