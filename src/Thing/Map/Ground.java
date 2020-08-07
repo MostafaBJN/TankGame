@@ -1,11 +1,12 @@
 package Thing.Map;
 
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
 import static Thing.Image.Ground.*;
 import Thing.Thing;
 
-public class Ground implements Thing{
+public class Ground implements Thing, Serializable {
 
     //Horizontal == up/down
     //Vertical == right/left

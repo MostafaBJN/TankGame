@@ -19,8 +19,8 @@ public class Tank implements Serializable, Thing
      * HEALTH DEFAULTS
      */
     public static final int DEFAULT_HEALTH_VALUE = 200;//should discus
-    private static final int MAX_HEALTH_VALUE = 1000;//should discus
-    private static final int MIN_HEALTH_VALUE = 1;//should discus
+    public static final int MAX_HEALTH_VALUE = 1000;//should discus
+    public static final int MIN_HEALTH_VALUE = 1;//should discus
 
 
 

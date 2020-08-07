@@ -1,10 +1,12 @@
 package Thing.Map;
 
+import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import static Thing.Image.Ground.*;
 
-public class Map {
+public class Map implements Serializable {
 
     private String name;
     private ArrayList<ArrayList<Integer>> intsOfMap;
@@ -50,6 +52,14 @@ public class Map {
         visualWidth = ((width - 1) / 2) * (Ground.bigSize + Ground.smallSize) + (Ground.smallSize);
         makingNewMap();
         readyingGrounds();
+    }
+
+    public void settingImagesOfGrounds() {
+        for (ArrayList<Ground> groundList:grounds) {
+            for (Ground ground:groundList) {
+                ground.styleFinder();
+            }
+        }
     }
 
     private void makingNewMap() {

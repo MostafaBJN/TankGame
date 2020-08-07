@@ -1,6 +1,5 @@
 package Game.GUIMenu;
 
-import Game.Run.Preview;
 import Service.Client.MainClient;
 
 import javax.swing.*;
@@ -9,8 +8,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class MainMenu extends GUIBase {
 
@@ -129,7 +126,7 @@ public class MainMenu extends GUIBase {
             }
             else if(e.getSource().equals(playMultiPlayerBtn)){
 //                try {
-//                    ArrayList<Preview> previewGame = MainClient.playMultiPlayer();
+//                    ArrayList<GameInfo> previewGame = MainClient.playMultiPlayer();
 //                } catch (IOException | ClassNotFoundException exception) {
 //                    exception.printStackTrace();
 //                }

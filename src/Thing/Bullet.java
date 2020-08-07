@@ -14,8 +14,8 @@ import static Thing.Image.Bullet.*;
 
 public class Bullet implements Serializable, Thing {
 
-    private static final long LIFE_TIME = 4000;
-    private static final long DEFAULT_VELOCITY = 20;
+    public static final long LIFE_TIME = 4000;
+    public static final long DEFAULT_VELOCITY = 20;
 
     public static final int DEFAULT_DAMAGE_POWER = 50;
     public static final int MAX_DAMAGE_POWER = 1000;

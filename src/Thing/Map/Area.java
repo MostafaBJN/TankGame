@@ -1,9 +1,11 @@
 package Thing.Map;
 
+import java.io.Serializable;
+
 /**
  * Area of Any Object In G
  */
-public class Area {
+public class Area implements Serializable {
 
     private int x;
     private int y;

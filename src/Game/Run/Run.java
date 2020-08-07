@@ -12,50 +12,21 @@ import java.util.Random;
 
 public class Run {
 
-    private String name;
-    private boolean teamGame;
-    private boolean leagueGame;
-    private int numberOfPlayer;
 
-    private int defaultTankHealth;
-    private int defaultBreakableWallHealth;
-    private int defaultBulletPower;
-
-    private boolean playWithComputer;
-
-    private Map map;
     private ArrayList<Player> players;
     private GameMap gameMap;
 
 
-    public Run(String name,
-               boolean teamGame,
-               boolean leagueGame,
-               int numberOfPlayer,
-               int defaultTankHealth,
-               int defaultBreakableWallHealth,
-               int defaultBulletPower,
-               boolean playWithComputer) {
-        this.name = name;
-        this.teamGame = teamGame;
-        this.leagueGame = leagueGame;
-        this.numberOfPlayer = numberOfPlayer;
-        this.defaultTankHealth = defaultTankHealth;
-        this.defaultBreakableWallHealth = defaultBreakableWallHealth;
-        this.defaultBulletPower = defaultBulletPower;
-        this.playWithComputer = playWithComputer;
-    }
 
     public Run() {
         // Initialize the global thread-pool
         ThreadPool.init();
 
         // Show the game menu ...
-        MapManager.loadAllMaps();
+
 
         //SERVER
-        map = selectRandomMap();
-        MapManager.selectMap(map.getName());
+
         //CLIENT
 
 
@@ -67,6 +38,7 @@ public class Run {
             }
         });
     }
+
 ///////////////////////////////////
     public static Map selectRandomMap() {
         ArrayList<Map> maps = MapManager.getMaps();

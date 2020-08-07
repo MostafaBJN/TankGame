@@ -1,8 +1,7 @@
 package Service.Client;
 
-import Game.Run.Preview;
+import Game.Play.GameInfo;
 import Game.Run.Run;
-import Thing.Map.Map;
 import Thing.Map.MapManager;
 import Service.Command;
 import Service.Player;
@@ -23,52 +22,60 @@ public class MainClient extends Command {
 
     private static Player loggedPlayer;
 
-    public static void main(String[] args) throws InterruptedException, IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         MapManager.loadAllMaps();
 
-        Map map = Run.selectRandomMap();
-        MapManager.selectMap(map.getName());
-        //GUIManager.openSetting();
+        //extra
+        MapManager.selectMap(Run.selectRandomMap().getName());
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
-        loggedPlayer = null;
-        int tries = 0;
+
         //wait till connect
-        while (true) {
-            try {
-                tries++;
-                socket = new Socket("127.0.0.1", MAIN_SERVER_PORT);
-                if(socket.isConnected()){
-                    //new Thread(new GUIManager.ShowMessage("Connected Successfully\nWELCOME", "Connection to Server", GUIManager.ShowMessage.INFORMATION)).start();
-                    break;
-                }
-            } catch (IOException e) {
-                if(tries > 30){
-                    new GUIManager.ShowMessage("G Server is not Available!\nTry Again Later", "Connection to Server", GUIManager.ShowMessage.ERROR).run();
-                    System.exit(-1);
-                }
-                else {
-                    if(tries % 5 == 1)
-                        new Thread(new GUIManager.ShowMessage("Can't Connect to the G Server\nTrying Again", "Connection to Server", GUIManager.ShowMessage.ERROR)).start();
-                }
-                Thread.sleep(1000);
-            }
-        }
+        tryToConnectToServer();
 
         try {
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             inputStream = new ObjectInputStream(socket.getInputStream());
         } catch (Exception e){
             e.printStackTrace();
-            new GUIManager.ShowMessage("G Server is not Available!\nTry Again Later", "Connection to Server", GUIManager.ShowMessage.ERROR).run();
+            JOptionPane.showMessageDialog(null,"Game Server is not Available!\nTry Again Later", "Connection to Server", JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
         }
+
+
         GUIManager.openLogin();
+    }
+
+    /**
+     * try to coonect to server
+     */
+    public static void tryToConnectToServer() throws InterruptedException {
+        loggedPlayer = null;
+        int tries = 0;
+        while (true) {
+            try {
+                tries++;
+                socket = new Socket("127.0.0.1", MAIN_SERVER_PORT);
+                if(socket.isConnected()){
+                    break;
+                }
+            } catch (IOException e) {
+                if(tries > 50){
+                    JOptionPane.showMessageDialog(null,"Game Server is not Available!\nTry Again Later", "Connection to Server", JOptionPane.ERROR_MESSAGE);
+                    System.exit(-1);
+                }
+                else {
+                    if(tries % 5 == 1)
+                        new Thread(new GUIManager.ShowMessage("Can't Connect to the Game Server\nTrying Again", "Connection to Server", GUIManager.ShowMessage.ERROR)).start();
+                }
+                //Thread.sleep(1000);
+            }
+        }
     }
 
     /**
@@ -79,13 +86,8 @@ public class MainClient extends Command {
         outputStream.flush();
         outputStream.writeObject(new Player(username, password));
         outputStream.flush();
-        int result = inputStream.readInt();
-        return result;
+        return inputStream.readInt();
     }
-
-    /**
-     * RETURN OF SERVER ABOUT LOGIN
-     */
 
     /**
      * get info from login GUI and check with server and give result
@@ -112,21 +114,27 @@ public class MainClient extends Command {
      *
      * @return games servers available
      */
-    public static ArrayList<Preview> playMultiPlayer() throws IOException, ClassNotFoundException {
+    public static ArrayList<GameInfo> playMultiPlayer() throws IOException, ClassNotFoundException {
         outputStream.writeInt(MainMenu.GET_LIST_OF_MULTIPLAYER_GAMES);
         outputStream.flush();
-        Object object = inputStream.readObject();
-        ArrayList<Preview> previews = (ArrayList<Preview>) object;
-        return previews;
+        int numberOfGames = inputStream.readInt();
+        ArrayList<GameInfo> gameInfos = new ArrayList<>();
+        for (int i = 0; i < numberOfGames; i++) {
+            Object object = inputStream.readObject();
+            GameInfo gameInfo = (GameInfo) object;
+            gameInfo.getMap().settingImagesOfGrounds();
+            gameInfos.add(gameInfo);
+        }
+        return gameInfos;
     }
 
     /**
      * Add A game to server list
      */
-    public static void addGame(Preview preview) throws IOException {
+    public static void addGame(GameInfo gameInfo) throws IOException {
         outputStream.writeInt(MainMenu.ADD_GAME);
         outputStream.flush();
-        outputStream.writeObject(preview);
+        outputStream.writeObject(gameInfo);
         outputStream.flush();
     }
 
@@ -164,12 +172,32 @@ public class MainClient extends Command {
         loggedPlayer = null;
     }
 
-    public static void sendPlayerInfo() {
-
+    public static void sendPlayerInfoToServer(Player player) throws IOException {
+        outputStream.writeInt(MainMenu.SEND_PLAYER_INFO_TO_SERVER);
+        outputStream.flush();
+        outputStream.writeObject(player);
+        outputStream.flush();
     }
 
-    public static Player receivePlayerInfo(String username) {
-        return new Player(username, "");
+    public static Player receivePlayerInfo(String username) throws IOException {
+        outputStream.writeInt(MainMenu.GET_PLAYER_INFO_FROM_SERVER);
+        outputStream.flush();
+        outputStream.writeObject(new Player(username, ""));
+        outputStream.flush();
+        Object object;
+        Player player;
+        try {
+            object = inputStream.readObject();
+            if (object instanceof Player){
+                return (Player) object;
+            }
+            else {
+                return null;
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static Socket getSocket() {
@@ -178,5 +206,9 @@ public class MainClient extends Command {
 
     public static Player getLoggedPlayer() {
         return loggedPlayer;
+    }
+
+    public static void runGame(GameInfo gameInfo) {
+
     }
 }

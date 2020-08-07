@@ -1,14 +1,17 @@
 package Game.GUIMenu;
 
-import Game.Run.Preview;
+import Game.Play.GameInfo;
 import Service.Client.MainClient;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import static Game.Play.GameInfo.*;
 
 public class AddGame extends GUIBase{
 
@@ -23,7 +26,7 @@ public class AddGame extends GUIBase{
     private JTextField numberOfGame;
 
     private JCheckBox teamGame;
-    private JCheckBox finishGame;
+    private JCheckBox leaguePlay;
 
     private JPanel infoPanel;
     private JPanel mainPanel;
@@ -48,16 +51,7 @@ public class AddGame extends GUIBase{
         nameLabel = new JLabel("Name :");
         name = new JTextField();
 
-        personLimitLabel = new JLabel("Player Number :");
-        personLimit = new JTextField();
-
-        personLimitLabel = new JLabel("Player Limit :");
-        personLimit = new JTextField();
-
-        personLimitLabel = new JLabel("Player Limit :");
-        personLimit = new JTextField();
-
-        personLimitLabel = new JLabel("Player Limit :");
+        personLimitLabel = new JLabel("Number Of Players :");
         personLimit = new JTextField();
 
         bulletPowerLabel = new JLabel("Bullet Power :");
@@ -71,7 +65,14 @@ public class AddGame extends GUIBase{
 
 
         teamGame = new JCheckBox("Team Game", false);
-        finishGame = new JCheckBox("League Game", false);
+        leaguePlay = new JCheckBox("League Game", false);
+        leaguePlay.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                numberOfGameLabel.setVisible(leaguePlay.isSelected());
+                numberOfGame.setVisible(leaguePlay.isSelected());
+            }
+        });
 
         numberOfGameLabel = new JLabel("Number Of Games :");
         numberOfGame = new JTextField();
@@ -90,24 +91,98 @@ public class AddGame extends GUIBase{
         infoPanel.add(bWallHealthLabel);
         infoPanel.add(bWallHealth);
         infoPanel.add(teamGame);
-        infoPanel.add(finishGame);
+        infoPanel.add(leaguePlay);
         infoPanel.add(numberOfGameLabel);
         infoPanel.add(numberOfGame);
-
-
 
 
         addBtn = new JButton("ADD");
         addBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //GET DATAS
+                //GET DATA
+
+                if(leaguePlay.isSelected()) {
+                    if (numberOfGame.getText().equals("")) {
+                        JOptionPane.showMessageDialog(AddGame.this, "NUMBER OF GAMES IS EMPTY!", "NEW GAME", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+                if(personLimit.getText().equals("")){
+                    JOptionPane.showMessageDialog(AddGame.this,"PLAYER LIMIT IS EMPTY!","NEW GAME", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(tankHealth.getText().equals("")){
+                    JOptionPane.showMessageDialog(AddGame.this,"TANK HEALTH IS EMPTY!","NEW GAME", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                if(bulletPower.getText().equals("")) {
+                    JOptionPane.showMessageDialog(AddGame.this,"BULLET POWER IS EMPTY!","NEW GAME", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(bWallHealth.getText().equals("")){
+                    JOptionPane.showMessageDialog(AddGame.this,"BREAKABLE WALL HEALTH IS EMPTY!","NEW GAME", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                ArrayList<Integer> errors = checkPCGameInfo(teamGame.isSelected(),
+                        leaguePlay.isSelected(),
+                        numberOfGame.getText(),
+                        personLimit.getText(),
+                        tankHealth.getText(),
+                        bulletPower.getText(),
+                        bWallHealth.getText()
+                );
+                for (int error:errors) {
+                    switch (error) {
+                        case NUMBER_OF_PLAYERS_SHOULD_BE_EVEN -> JOptionPane.showMessageDialog(AddGame.this,"NUMBER_OF_PLAYERS_SHOULD_BE_EVEN!", "NEW GAME", JOptionPane.ERROR_MESSAGE);
+                        case NUMBER_OF_GAMES_IS_OUT_OF_RANGE -> JOptionPane.showMessageDialog(AddGame.this,"NUMBER_OF_GAMES_IS_OUT_OF_RANGE!", "NEW GAME", JOptionPane.ERROR_MESSAGE);
+                        case HEALTH_OF_TANK_IS_OUT_OF_RANGE -> JOptionPane.showMessageDialog(AddGame.this,"HEALTH_OF_TANK_IS_OUT_OF_RANGE!", "NEW GAME", JOptionPane.ERROR_MESSAGE);
+                        case POWER_OF_BULLET_IS_OUT_OF_RANGE -> JOptionPane.showMessageDialog(AddGame.this,"POWER_OF_BULLET_IS_OUT_OF_RANGE!", "NEW GAME", JOptionPane.ERROR_MESSAGE);
+                        case HEALTH_OF_B_WALL_IS_OUT_OF_RANGE -> JOptionPane.showMessageDialog(AddGame.this,"HEALTH_OF_BREAKABLE_WALL_IS_OUT_OF_RANGE!", "NEW GAME", JOptionPane.ERROR_MESSAGE);
+                        case WRONG_INPUT -> JOptionPane.showMessageDialog(AddGame.this,"STRING VALUE IN INTEGER FIELDS!", "NEW GAME", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                if(errors.size() > 0){
+                    return;
+                }
+
+                String nameOfGame = name.getText();
+                if(name.getText().equals("")){
+                    nameOfGame = String.valueOf(System.currentTimeMillis());
+                }
+                GameInfo gameInfo;
+
+                if(leaguePlay.isSelected()) {
+                    gameInfo = new GameInfo(GameInfo.selectRandomPort(), name.getText(), false, false,
+                            teamGame.isSelected(),
+                            leaguePlay.isSelected(),
+                            Integer.parseInt(numberOfGame.getText()),
+                            Integer.parseInt(personLimit.getText()),
+                            0,
+                            Integer.parseInt(tankHealth.getText()),
+                            Integer.parseInt(bulletPower.getText()),
+                            Integer.parseInt(bWallHealth.getText()));
+                }
+                else {
+                    gameInfo = new GameInfo(GameInfo.selectRandomPort(), name.getText(), false, false,
+                            teamGame.isSelected(),
+                            leaguePlay.isSelected(),
+                            1,
+                            Integer.parseInt(personLimit.getText()),
+                            0,
+                            Integer.parseInt(tankHealth.getText()),
+                            Integer.parseInt(bulletPower.getText()),
+                            Integer.parseInt(bWallHealth.getText()));
+                }
 
 
-
-
-                //Preview preview = new Preview();
-                //MainClient.addGame(preview);
+                try {
+                    MainClient.addGame(gameInfo);
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
             }
         });
 

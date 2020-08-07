@@ -1,12 +1,13 @@
 package Thing.Map;
 
 import javax.swing.*;
+import java.io.Serializable;
 
-public class BreakableWall extends Ground {
+public class BreakableWall extends Ground implements Serializable {
     
     public static final int DEFAULT_HEALTH_VALUE = 1000;//should discus
-    private static final int MAX_HEALTH_VALUE = 10000;//should discus
-    private static final int MIN_HEALTH_VALUE = 1;//should discus
+    public static final int MAX_HEALTH_VALUE = 10000;//should discus
+    public static final int MIN_HEALTH_VALUE = 1;//should discus
 
     private static int defaultHealth;
 

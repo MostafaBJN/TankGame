@@ -1,6 +1,7 @@
 package Game.GUIMenu;
 
-import Game.Run.Preview;
+import Game.Play.GameInfo;
+import Service.Client.MainClient;
 import Thing.Map.Ground;
 import Thing.Map.Map;
 
@@ -9,43 +10,44 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PlayMultiPlayerMenu extends GUIBase
 {
-    public PlayMultiPlayerMenu()
-    {
+    public PlayMultiPlayerMenu() {
         super("Games");
-        ArrayList<Preview> allGame ;//TODO GET LIST OF GAMES
-        ArrayList<Preview> allGames = new ArrayList<>();
-        allGames.add(new Preview("Hello","1","2","3","4","5","6"));
-        allGames.add(new Preview("grbg","44","55","66","78","--","vgfe"));
-        allGames.add(new Preview("fff","46hh","2d","6u","5y3","g53","43f"));
+
+        ArrayList<GameInfo> allGames = null;
+        try {
+            allGames = MainClient.playMultiPlayer();
+        } catch (IOException | ClassNotFoundException exception) {
+            exception.printStackTrace();
+            new Thread(new GUIManager.ShowMessage("GETTING LIST OF SERVERS ERROR!", "PLAY MULTIPLAYER", GUIManager.ShowMessage.ERROR)).start();
+            GUIManager.openMainMenu();
+        }
 
 
         JTabbedPane tab = new JTabbedPane();
-        for (Preview game : allGames) {
+        for (GameInfo game : allGames) {
 
-            JLabel nameOfGame = new JLabel("Name : " + game.getNameOfGame());
+            JLabel nameOfGame = new JLabel("Name : " + game.getName());
 
-            JLabel groupingOr1By1 = new JLabel("Team Play : " + game.getGroupingOr1By1());
+            JLabel teamPlay = new JLabel("Team Play : " + game.isTeamGame());
 
-            JLabel playingWithComputerOrPerson = new JLabel("Robots Allowed : " + game.getPlayingWithComputerOrPerson());
+            JLabel numberOfPlayers = new JLabel("Number Of Players : " + game.getNumberOfPlayers());
 
-            JLabel minOfPlayer = new JLabel("Player Number : " );
+            JLabel leagueGame = new JLabel("League Game : " + game.isLeaguePlay());
 
-            JLabel joinedPlayer = new JLabel("Joined Players : " );
+            JLabel countOfLeague = new JLabel("Number Of Rounds : " + game.getNumberOfGames());
 
-            JLabel countOfLeague = new JLabel("Number Of Rounds : " + game.getCountOfLeague());
+            JLabel joinedPlayer = new JLabel("Joined Players : " + (game.getNumberOfPlayers() - game.getPlayerNeedToJoin()));
 
-            JLabel livesOfTank = new JLabel("Tank Health : " + game.getLivesOfTank());
+            JLabel livesOfTank = new JLabel("Tank Health : " + game.getTankHealth());
 
+            JLabel livesOfWall = new JLabel("Breakable Wall Health : " + game.getBWallHealth());
 
-            JLabel livesOfWall = new JLabel("Breakable Wall Health : " + game.getLivesOfWall());
-
-
-            JLabel powerOfBullet = new JLabel("Bullet Power : " + game.getPowerOfBullet());
-
+            JLabel powerOfBullet = new JLabel("Bullet Power : " + game.getBulletPower());
 
             JLabel mapTemple = new JLabel(resize(game.getMap(), game.getMap().getVisualWidth()/4,game.getMap().getVisualHeight()/4));//TODO:empty Label
             mapTemple.setSize(game.getMap().getVisualWidth()/4,game.getMap().getVisualHeight()/4);
@@ -63,10 +65,10 @@ public class PlayMultiPlayerMenu extends GUIBase
 
             JPanel list = new JPanel(new GridLayout(9,0,10,10));
             list.add(nameOfGame);
-            list.add(groupingOr1By1);
-            list.add(minOfPlayer);
+            list.add(teamPlay);
+            list.add(numberOfPlayers);
             list.add(joinedPlayer);
-            list.add(playingWithComputerOrPerson);
+            list.add(leagueGame);
             list.add(countOfLeague);
             list.add(livesOfTank);
             list.add(livesOfWall);
@@ -82,7 +84,7 @@ public class PlayMultiPlayerMenu extends GUIBase
             panel.add(list, BorderLayout.CENTER);
             panel.add(button, BorderLayout.SOUTH);
 
-            tab.add(game.getNameOfGame(), panel);
+            tab.add(game.getName(), panel);
         }
 
 
@@ -126,10 +128,10 @@ public class PlayMultiPlayerMenu extends GUIBase
     }
 
 
-//    resizing a picture
+    /**
+     * resizing a Map to given scale
+     */
     public static ImageIcon resize(Map map, int scaledWidth, int scaledHeight){
-        // reads input image
-        // creates output image
 
         BufferedImage img = new BufferedImage(map.getVisualWidth(), map.getVisualHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = (Graphics2D) img.getGraphics();

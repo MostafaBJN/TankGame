@@ -1,10 +1,15 @@
 package Game.GUIMenu;
 
+import Game.Play.GameInfo;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+import static Game.Play.GameInfo.*;
 
 public class PlayWithPc extends GUIBase {
 
@@ -18,7 +23,7 @@ public class PlayWithPc extends GUIBase {
     private JTextField numberOfGame;
 
     private JCheckBox teamGame;
-    private JCheckBox finishGame;
+    private JCheckBox leaguePlay;
 
     private JPanel infoPanel;
     private JPanel mainPanel;
@@ -39,7 +44,7 @@ public class PlayWithPc extends GUIBase {
         mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 
-        personLimitLabel = new JLabel("Player Limit :");
+        personLimitLabel = new JLabel("Number Of Players :");
         personLimit = new JTextField();
 
         bulletPowerLabel = new JLabel("Bullet Power :");
@@ -52,12 +57,12 @@ public class PlayWithPc extends GUIBase {
         bWallHealth = new JTextField();
 
         teamGame = new JCheckBox("Team Game", false);
-        finishGame = new JCheckBox("League Game", false);
-        finishGame.addActionListener(new ActionListener() {
+        leaguePlay = new JCheckBox("League Game", false);
+        leaguePlay.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                numberOfGameLabel.setVisible(finishGame.isSelected());
-                numberOfGame.setVisible(finishGame.isSelected());
+                numberOfGameLabel.setVisible(leaguePlay.isSelected());
+                numberOfGame.setVisible(leaguePlay.isSelected());
             }
         });
 
@@ -76,7 +81,7 @@ public class PlayWithPc extends GUIBase {
         infoPanel.add(bWallHealthLabel);
         infoPanel.add(bWallHealth);
         infoPanel.add(teamGame);
-        infoPanel.add(finishGame);
+        infoPanel.add(leaguePlay);
         infoPanel.add(numberOfGameLabel);
         infoPanel.add(numberOfGame);
 
@@ -85,14 +90,75 @@ public class PlayWithPc extends GUIBase {
         playBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                personLimit.getText();
-                tankHealth.getText();
-                bulletPower.getText();
-                bWallHealth.getText();
-                numberOfGame.getText();
+                if(leaguePlay.isSelected()) {
+                    if (numberOfGame.getText().equals("")) {
+                        JOptionPane.showMessageDialog(PlayWithPc.this, "NUMBER OF GAMES IS EMPTY!", "NEW GAME", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+                if(personLimit.getText().equals("")){
+                    JOptionPane.showMessageDialog(PlayWithPc.this,"PLAYER LIMIT IS EMPTY!","NEW GAME", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(tankHealth.getText().equals("")){
+                    JOptionPane.showMessageDialog(PlayWithPc.this,"TANK HEALTH IS EMPTY!","NEW GAME", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-                teamGame.isSelected();
-                finishGame.isSelected();
+                if(bulletPower.getText().equals("")) {
+                    JOptionPane.showMessageDialog(PlayWithPc.this,"BULLET POWER IS EMPTY!","NEW GAME", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(bWallHealth.getText().equals("")){
+                    JOptionPane.showMessageDialog(PlayWithPc.this,"BREAKABLE WALL HEALTH IS EMPTY!","NEW GAME", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                ArrayList<Integer> errors = checkPCGameInfo(teamGame.isSelected(),
+                        leaguePlay.isSelected(),
+                        numberOfGame.getText(),
+                        personLimit.getText(),
+                        tankHealth.getText(),
+                        bulletPower.getText(),
+                        bWallHealth.getText()
+                        );
+                for (int error:errors) {
+                    switch (error) {
+                        case NUMBER_OF_PLAYERS_SHOULD_BE_EVEN -> JOptionPane.showMessageDialog(PlayWithPc.this,"NUMBER_OF_PLAYERS_SHOULD_BE_EVEN!", "NEW GAME", JOptionPane.ERROR_MESSAGE);
+                        case NUMBER_OF_GAMES_IS_OUT_OF_RANGE -> JOptionPane.showMessageDialog(PlayWithPc.this,"NUMBER_OF_GAMES_IS_OUT_OF_RANGE!", "NEW GAME", JOptionPane.ERROR_MESSAGE);
+                        case HEALTH_OF_TANK_IS_OUT_OF_RANGE -> JOptionPane.showMessageDialog(PlayWithPc.this,"HEALTH_OF_TANK_IS_OUT_OF_RANGE!", "NEW GAME", JOptionPane.ERROR_MESSAGE);
+                        case POWER_OF_BULLET_IS_OUT_OF_RANGE -> JOptionPane.showMessageDialog(PlayWithPc.this,"POWER_OF_BULLET_IS_OUT_OF_RANGE!", "NEW GAME", JOptionPane.ERROR_MESSAGE);
+                        case HEALTH_OF_B_WALL_IS_OUT_OF_RANGE -> JOptionPane.showMessageDialog(PlayWithPc.this,"HEALTH_OF_BREAKABLE_WALL_IS_OUT_OF_RANGE!", "NEW GAME", JOptionPane.ERROR_MESSAGE);
+                        case WRONG_INPUT -> JOptionPane.showMessageDialog(PlayWithPc.this,"STRING VALUE IN INTEGER FIELDS!", "NEW GAME", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                if(errors.size() > 0){
+                    return;
+                }
+
+                if(leaguePlay.isSelected()) {
+                    GameInfo gameInfo = new GameInfo(-1, "PLAY", true, true,
+                            teamGame.isSelected(),
+                            leaguePlay.isSelected(),
+                            Integer.parseInt(numberOfGame.getText()),
+                            Integer.parseInt(personLimit.getText()),
+                            Integer.parseInt(personLimit.getText()) - 1,
+                            Integer.parseInt(tankHealth.getText()),
+                            Integer.parseInt(bulletPower.getText()),
+                            Integer.parseInt(bWallHealth.getText()));
+                }
+                else {
+                    GameInfo gameInfo = new GameInfo(-1, "PLAY", true, true,
+                            teamGame.isSelected(),
+                            leaguePlay.isSelected(),
+                            1,
+                            Integer.parseInt(personLimit.getText()),
+                            Integer.parseInt(personLimit.getText()) - 1,
+                            Integer.parseInt(tankHealth.getText()),
+                            Integer.parseInt(bulletPower.getText()),
+                            Integer.parseInt(bWallHealth.getText()));
+                }
+
                 //TODO Play Game
             }
         });

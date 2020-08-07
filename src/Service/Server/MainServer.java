@@ -1,6 +1,6 @@
 package Service.Server;
 
-import Game.Run.Preview;
+import Game.Play.GameInfo;
 import Service.Command;
 import Service.Player;
 import Game.GUIMenu.GUIManager;
@@ -18,14 +18,17 @@ public class MainServer extends Command {
     //all players info
     protected static ArrayList<Player> players;
     protected static int countOfOnlinePlayers;
-    private static ArrayList<Preview> gameServers;
-    //private static ArrayList<Thread> playerThreads;
+
+    private static ArrayList<GameInfo> gameInfos;
+
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         countOfOnlinePlayers = 0;
         connectionSockets = new ArrayList<>();
+        gameInfos = new ArrayList<>();
+        players = new ArrayList<>();
         new Thread(new LoadPlayer()).start();
-        //new Thread(new CheckPlayersConnection()).start();
+
         try {
             serverSocket = new ServerSocket(MAIN_SERVER_PORT);
             while(true) {
@@ -113,9 +116,9 @@ public class MainServer extends Command {
                     ;
                     //get Command
                     try {
-                        System.out.println("BEFORE");
+                        System.out.println("WAIT FOR COMMAND");
                         command = inputStream.readInt();
-                        System.out.println("AFTER");
+                        System.out.println("COMMAND RECEIVED");
                         commandMenu(command);
                     }
                     catch (java.io.EOFException | java.net.SocketException eofException) {
@@ -140,17 +143,15 @@ public class MainServer extends Command {
         private void commandMenu(int command) throws IOException {
             switch (command){
                 case MainMenu.SIGN_UP:
+                    System.out.println("SIGN_UP");
                     try {
                         Object object = inputStream.readObject();
-                        System.out.println("Reading");
                         if(object instanceof Player) {
                             Player player = (Player) object;
                             System.out.println(player.getUsername() + " " + player.getPassword());
                             players.add(player);
-                            System.out.println("Added");
                             outputStream.writeInt(Login.SUCCESSFUL);
                             outputStream.flush();
-                            System.out.println("Sent");
                             //SAVE Player
                             new Thread(new SavePlayer(player)).start();
                         }
@@ -164,9 +165,9 @@ public class MainServer extends Command {
                     }
                     break;
                 case MainMenu.TRY_TO_LOGIN:
+                    System.out.println("TRY_TO_LOGIN");
                     try {
                         Object object = inputStream.readObject();
-                        System.out.println("Reading");
                         if (object instanceof Player) {
                             Player player = (Player) object;
                             for (Player playerOfList : players) {
@@ -195,10 +196,12 @@ public class MainServer extends Command {
                         exception.printStackTrace();
                     }
                     break;
+                case MainMenu.GET_PLAYER_INFO_FROM_SERVER:
+                    System.out.println("GET_PLAYER_INFO_FROM_SERVER");
                 case MainMenu.LOGGING_IN:
+                    System.out.println("LOGGING_IN");
                     try {
                         Object object = inputStream.readObject();
-                        System.out.println("Reading");
                         if (object instanceof Player) {
                             Player player = (Player) object;
                             for (Player playerOfList : players) {
@@ -217,18 +220,42 @@ public class MainServer extends Command {
                     }
                     break;
                 case MainMenu.GET_LIST_OF_MULTIPLAYER_GAMES:
-                    outputStream.writeObject(gameServers);
+                    System.out.println("GET_LIST_OF_MULTIPLAYER_GAMES");
+                    outputStream.writeInt(gameInfos.size());
                     outputStream.flush();
+                    for (GameInfo gameInfo:gameInfos) {
+                        outputStream.writeObject(gameInfo);
+                        outputStream.flush();
+                    }
                     break;
                 case MainMenu.ADD_GAME:
+                    System.out.println("ADD_GAME");
                     try {
                         Object object = inputStream.readObject();
-                        Preview preview = (Preview) object;
-                        gameServers.add(preview);
+                        GameInfo gameInfo = (GameInfo) object;
+                        gameInfos.add(gameInfo);
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
-
+                    break;
+                case MainMenu.SEND_PLAYER_INFO_TO_SERVER:
+                    System.out.println("SEND_PLAYER_INFO_TO_SERVER");
+                    try {
+                        Object object = inputStream.readObject();
+                        if(object instanceof Player) {
+                            Player player = (Player) object;
+                            for (Player playerOfList : players) {
+                                if (playerOfList.equals(player)) {
+                                    players.set(players.indexOf(playerOfList), player);
+                                    new Thread(new SavePlayer(player)).start();
+                                    return;
+                                }
+                            }
+                        }
+                    } catch (ClassNotFoundException | IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
                     //TODO MAKE A COMMAND MENU
 
             }
