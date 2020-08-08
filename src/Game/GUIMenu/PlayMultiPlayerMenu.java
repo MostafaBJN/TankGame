@@ -66,7 +66,8 @@ public class PlayMultiPlayerMenu extends GUIBase
                         GUIManager.closePlayMultiPlayerMenu();
                     }
                     else {
-                        new RunGameClient(gameInfo);
+                        GUIManager.closePlayMultiPlayerMenu();
+                        GUIManager.openLobby(gameInfo);
                     }
                 }
             });

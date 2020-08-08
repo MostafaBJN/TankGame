@@ -13,19 +13,19 @@ public class Setting {
     Access with MainClient.getLoggedPlayer.....
      */
 
-    private int defaultTankHealth;
-    private int defaultBreakableWallHealth;
-    private int defaultBulletPower;
+    protected int defaultTankHealth;
+    protected int defaultBreakableWallHealth;
+    protected int defaultBulletPower;
 
-    private long totalPlayedTime;
+    protected long totalPlayedTime;
 
     public static final int WIN_GAME = 1;
     public static final int LOSE_GAME = -1;
 
-    private int numberOfWinsOnline;
-    private int numberOfLosesOnline;
-    private int numberOfWinsOffline;
-    private int numberOfLosesOffline;
+    protected int numberOfWinsOnline;
+    protected int numberOfLosesOnline;
+    protected int numberOfWinsOffline;
+    protected int numberOfLosesOffline;
 
     //TODO ? List of URLs ?
     //change and see
@@ -100,5 +100,77 @@ public class Setting {
         else {
             numberOfLosesOnline++;
         }
+    }
+
+    public int getDefaultTankHealth() {
+        return defaultTankHealth;
+    }
+
+    public int getDefaultBreakableWallHealth() {
+        return defaultBreakableWallHealth;
+    }
+
+    public int getDefaultBulletPower() {
+        return defaultBulletPower;
+    }
+
+    public long getTotalPlayedTime() {
+        return totalPlayedTime;
+    }
+
+    public static int getWinGame() {
+        return WIN_GAME;
+    }
+
+    public static int getLoseGame() {
+        return LOSE_GAME;
+    }
+
+    public int getNumberOfWinsOnline() {
+        return numberOfWinsOnline;
+    }
+
+    public int getNumberOfLosesOnline() {
+        return numberOfLosesOnline;
+    }
+
+    public int getNumberOfWinsOffline() {
+        return numberOfWinsOffline;
+    }
+
+    public int getNumberOfLosesOffline() {
+        return numberOfLosesOffline;
+    }
+
+    public void setDefaultTankHealth(int defaultTankHealth) {
+        this.defaultTankHealth = defaultTankHealth;
+    }
+
+    public void setDefaultBreakableWallHealth(int defaultBreakableWallHealth) {
+        this.defaultBreakableWallHealth = defaultBreakableWallHealth;
+    }
+
+    public void setDefaultBulletPower(int defaultBulletPower) {
+        this.defaultBulletPower = defaultBulletPower;
+    }
+
+    public void setTotalPlayedTime(long totalPlayedTime) {
+        this.totalPlayedTime = totalPlayedTime;
+    }
+
+    public void setNumberOfWinsOnline(int numberOfWinsOnline) {
+        this.numberOfWinsOnline = numberOfWinsOnline;
+    }
+
+    public void setNumberOfLosesOnline(int numberOfLosesOnline) {
+        this.numberOfLosesOnline = numberOfLosesOnline;
+    }
+
+    public void setNumberOfWinsOffline(int numberOfWinsOffline) {
+        this.numberOfWinsOffline = numberOfWinsOffline;
+    }
+
+    public void setNumberOfLosesOffline(int numberOfLosesOffline) {
+        this.numberOfLosesOffline = numberOfLosesOffline;
     }
 }

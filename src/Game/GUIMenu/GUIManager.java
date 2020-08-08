@@ -1,6 +1,7 @@
 package Game.GUIMenu;
 
 
+import Game.Play.GameInfo;
 import Service.Player;
 
 import javax.swing.*;
@@ -13,6 +14,7 @@ public class GUIManager {
     private static AddGame addGame;
     private static Setting setting;
     private static PlayWithPc playWithPc;
+    private static Lobby lobby;
 
     static {
         try {
@@ -78,6 +80,15 @@ public class GUIManager {
         playWithPc.closeGUI();
     }
 
+    public static void openLobby(GameInfo gameInfo){
+        lobby = new Lobby("Lobby", gameInfo);
+        lobby.showGUI();
+    }
+
+    public static void closeLobby(){
+        lobby.closeGUI();
+    }
+
 
     public static class ShowMessage implements Runnable{
 
@@ -100,4 +111,7 @@ public class GUIManager {
     }
 
 
+    public static Lobby getLobby() {
+        return lobby;
+    }
 }

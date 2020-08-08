@@ -1,11 +1,15 @@
 package Thing;
 
 
+import Service.Player;
+
 import java.io.Serializable;
 
 public class PlayingTank extends Tank implements Serializable {
 
     private int health;
+
+    private Player owner;
 
     private int x;
     private int y;
@@ -15,8 +19,8 @@ public class PlayingTank extends Tank implements Serializable {
     private boolean prizePicked;
     private Prize currentPrize;
 
-    private static final int DEFAULT_SPEED = 20;
-    private static final int DEFAULT_ANGLE = -90;
+    public static final int DEFAULT_SPEED = 20;
+    public static final int DEFAULT_ANGLE = -90;
 
     private double xVelocity;
     private double yVelocity;
@@ -25,17 +29,21 @@ public class PlayingTank extends Tank implements Serializable {
     private boolean invincible;
     private int powerOfTir;
 
-    public PlayingTank(Tank tank, int x, int y){
+    public PlayingTank(Tank tank, int x, int y, Player owner){
         super(tank);
         health = defaultHealth;
         this.x = x;
         this.y = y;
+        this.owner = owner;
         direction = new Degree(DEFAULT_ANGLE);
         invincible = false;
         powerOfTir = Bullet.DEFAULT_DAMAGE_POWER;
         visualArea = new VisualArea(widthOfTank, health, direction, x, y);
     }
 
+    public void shootBullet() {
+
+    }
 
 
 
@@ -72,12 +80,70 @@ public class PlayingTank extends Tank implements Serializable {
         return powerOfTir;
     }
 
-    public void setCurrentPrize(Prize currentPrize) {
-        this.currentPrize = currentPrize;
-    }
 
 
     public VisualArea getVisualArea() {
         return visualArea;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public Player getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
+    }
+
+
+    public boolean isPrizePicked() {
+        return prizePicked;
+    }
+
+    public void setPrizePicked(boolean prizePicked) {
+        this.prizePicked = prizePicked;
+    }
+
+
+
+    public static int getDefaultSpeed() {
+        return DEFAULT_SPEED;
+    }
+
+    public static int getDefaultAngle() {
+        return DEFAULT_ANGLE;
+    }
+
+    public double getxVelocity() {
+        return xVelocity;
+    }
+
+    public void setxVelocity(double xVelocity) {
+        this.xVelocity = xVelocity;
+    }
+
+    public double getyVelocity() {
+        return yVelocity;
+    }
+
+    public void setyVelocity(double yVelocity) {
+        this.yVelocity = yVelocity;
+    }
+
+
+
+    public boolean isInvincible() {
+        return invincible;
+    }
+
+    public void setInvincible(boolean invincible) {
+        this.invincible = invincible;
+    }
+
+    public void setPowerOfTir(int powerOfTir) {
+        this.powerOfTir = powerOfTir;
     }
 }

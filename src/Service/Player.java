@@ -81,4 +81,6 @@ public class Player extends Setting implements Serializable {
     public void setTank(Tank tank) {
         this.tank = tank;
     }
+
+
 }

@@ -1,6 +1,7 @@
 package Game.GUIMenu;
 
 import Game.Play.GameInfo;
+import Game.Run.RunGameClient;
 import Game.Run.RunGameServer;
 import Service.Client.MainClient;
 
@@ -187,7 +188,11 @@ public class AddGame extends GUIBase{
 
                 //TODO RUN GAME
                 try {
-                    RunGameServer gameServer = new RunGameServer(gameInfo);
+                    new Thread(new RunGameServer(gameInfo)).start();
+                    RunGameClient.connectToGame(gameInfo.getPort());
+                    GUIManager.closeAddGame();
+                    GUIManager.openLobby(gameInfo);
+
                 } catch (IOException exception) {
                     exception.printStackTrace();
                 }

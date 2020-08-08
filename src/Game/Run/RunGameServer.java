@@ -14,28 +14,32 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class RunGameServer extends Run {
+public class RunGameServer implements Runnable {
 
 
-    private ServerSocket serverSocket;
-    private Socket connectionSocket;
+    protected ArrayList<Player> players;
+    private GameInfo gameInfo;
     Player gameMakerPlayer;
 
+    private ServerSocket serverSocket;
     protected ArrayList<Socket> connectionSockets;
+    private Run run;
 
     //all players info
     protected int countOfOnlinePlayers;
 
 
     public RunGameServer(GameInfo gameInfo) throws IOException {
-        super(gameInfo);
+        run = null;
+        players = new ArrayList<>();
+        this.gameInfo = gameInfo;
         gameMakerPlayer = MainClient.getLoggedPlayer();
-        startServer();
     }
 
-    public void startServer() throws IOException {
+    @Override
+    public void run() {
         try {
-            countOfOnlinePlayers = 1;
+            countOfOnlinePlayers = 0;
             connectionSockets = new ArrayList<>();
             serverSocket = new ServerSocket(gameInfo.getPort());
             while (countOfOnlinePlayers < gameInfo.getNumberOfPlayers()) {
@@ -43,7 +47,8 @@ public class RunGameServer extends Run {
                 Socket connectionSocket = serverSocket.accept();
                 connectionSockets.add(connectionSocket);
                 countOfOnlinePlayers++;
-                Thread t = new Thread(new ClientCommand(connectionSocket, countOfOnlinePlayers));
+                gameInfo.playerJoin();
+                Thread t = new Thread(new ClientCommand(connectionSocket, countOfOnlinePlayers, gameInfo));
                 t.start();
             }
         } catch (IOException ex) {
@@ -58,12 +63,14 @@ public class RunGameServer extends Run {
         protected final int clientNum;
         protected final ObjectInputStream inputStream;
         protected final ObjectOutputStream outputStream;
+        protected final GameInfo firstGameInfo;
 
-        public ClientCommand(Socket connectionSocket, int clientNum) throws IOException {
+        public ClientCommand(Socket connectionSocket, int clientNum, GameInfo gameInfo) throws IOException {
             this.connectionSocket = connectionSocket;
             this.clientNum = clientNum;
             outputStream = new ObjectOutputStream(connectionSocket.getOutputStream());
             inputStream = new ObjectInputStream(connectionSocket.getInputStream());
+            firstGameInfo = gameInfo;
         }
 
         @Override
@@ -108,7 +115,16 @@ public class RunGameServer extends Run {
                         players.add(player);
                     }
                     break;
-
+                case PlayGame.GET_GAME_INFO_UPDATE:
+                    outputStream.writeObject(gameInfo);
+                    outputStream.flush();
+                    break;
+                case PlayGame.GET_START_OF_GAME:
+                    if(run == null){
+                        run = new Run(gameInfo, players);
+                    }
+                    outputStream.writeObject(run);
+                    outputStream.flush();
                 //TODO MAKE A COMMAND MENU
 
             }

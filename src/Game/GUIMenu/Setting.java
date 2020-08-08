@@ -1,5 +1,6 @@
 package Game.GUIMenu;
 
+import Service.Client.MainClient;
 import Service.Player;
 
 import javax.swing.*;
@@ -55,43 +56,44 @@ public class Setting extends GUIBase {
 
 
         playedTimeLabel = new JLabel("Played Time :");
-        playedTime = new JTextField();
+        playedTime = new JTextField(String.valueOf(player.getTotalPlayedTime()));
         playedTime.setEditable(false);
 
         usernameLabel = new JLabel("Username :");
-        username = new JTextField();
+        username = new JTextField(player.getUsername());
         username.setEditable(false);
 
         offlineLosesLabel = new JLabel("offline Loses :");
-        offlineLoses = new JTextField();
+        offlineLoses = new JTextField(String.valueOf(player.getNumberOfLosesOffline()));
         offlineLoses.setEditable(false);
 
         onlineLosesLabel = new JLabel("online Loses :");
-        onlineLoses = new JTextField();
+        onlineLoses = new JTextField(String.valueOf(player.getNumberOfLosesOnline()));
         onlineLoses.setEditable(false);
 
         offlineWinsLabel = new JLabel("offline Wins :");
-        offlineWins = new JTextField();
+        offlineWins = new JTextField(String.valueOf(player.getNumberOfWinsOffline()));
         offlineWins.setEditable(false);
 
         onlineWinsLabel = new JLabel("online Wins :");
-        onlineWins = new JTextField();
+        onlineWins = new JTextField(String.valueOf(player.getNumberOfWinsOnline()));
         onlineWins.setEditable(false);
 
         bulletPowerLabel = new JLabel("Bullet Power :");
-        bulletPower = new JTextField();
+        bulletPower = new JTextField(String.valueOf(player.getDefaultBulletPower()));
 
 
         tankHealthLabel = new JLabel("Tank Health :");
-        tankHealth = new JTextField();
+        tankHealth = new JTextField(String.valueOf(player.getDefaultTankHealth()));
 
 
         bWallHealthLabel = new JLabel("Breakable Wall Health :");
-        bWallHealth = new JTextField();
+        bWallHealth = new JTextField(String.valueOf(player.getDefaultBreakableWallHealth()));
 
 
         tankImageLabel = new JLabel("Your Tank :");
-        tankImage = new JLabel();
+        player.getTank().styleFinder();
+        tankImage = new JLabel((Icon) player.getTank().getStyleImage());
 
         changeTankLabel = new JLabel("Change Tank Model");
         changeTankBtn = new JButton("Tank Model");
@@ -123,6 +125,10 @@ public class Setting extends GUIBase {
         backBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                MainClient.getLoggedPlayer().setDefaultBulletPower(Integer.parseInt(bulletPower.getText()));
+                MainClient.getLoggedPlayer().setDefaultTankHealth(Integer.parseInt(tankHealth.getText()));
+                MainClient.getLoggedPlayer().setDefaultBreakableWallHealth(Integer.parseInt(bWallHealth.getText()));
+                
                 GUIManager.closeSetting();
                 GUIManager.openMainMenu();
             }

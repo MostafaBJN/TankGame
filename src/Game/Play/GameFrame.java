@@ -106,12 +106,14 @@ public class GameFrame extends GUIBase {
 //		// Draw ball
 //		g2d.setColor(Color.BLACK);
 //		g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
-		for(ArrayList<Ground> listGround:state.getGameMap().getMap().getGrounds()){
+		for(ArrayList<Ground> listGround:state.getRun().getGameMap().getMap().getGrounds()){
 			for(Ground ground:listGround){
+				ground.styleFinder();
 				g2d.drawImage(ground.getStyleImage(), ground.getStartHorizontalVisualPointInMap()+6, ground.getStartVerticalVisualPointInMap()+31,null);
 			}
 		}
-		for(PlayingTank playingTank:state.getGameMap().getPlayingTanks()){
+		for(PlayingTank playingTank:state.getRun().getGameMap().getPlayingTanks()){
+			playingTank.styleFinder();
 			g2d.drawImage(playingTank.getStyleImage(), playingTank.getX() - (Tank.widthOfTank/2), (playingTank.getY() - Tank.heightOfTank/2), null);
 		}
 

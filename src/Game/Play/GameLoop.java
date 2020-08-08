@@ -2,6 +2,9 @@
 package Game.Play;
 
 
+import Game.Run.Run;
+import Service.Player;
+
 /**
  * A very simple structure for the main game loop.
  * THIS IS NOT PERFECT, but works for most situations.
@@ -34,8 +37,8 @@ public class GameLoop implements Runnable {
 	/**
 	 * This must be called before the game loop starts.
 	 */
-	public void init() {
-		state = new GameState();
+	public void init(Run run, Player activePlayer) {
+		state = new GameState(run, activePlayer);
 		canvas.addKeyListener(state.getKeyListener());
 		canvas.addMouseListener(state.getMouseListener());
 		canvas.addMouseMotionListener(state.getMouseMotionListener());

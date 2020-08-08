@@ -1,5 +1,6 @@
 package Game.Play;
 
+import Service.Client.MainClient;
 import Thing.Map.*;
 import Thing.Area;
 import Thing.Bullet;
@@ -96,7 +97,7 @@ public class GameMap {
             } while (!checkOutLinePointOfTank(xStart, xEnd, yStart, yEnd));
             System.out.println(tank.getName() + " " + tank.getModel() + " : y = " + yMiddle + " , x = " + xMiddle);
             fillTankPlace(xStart, xEnd, yStart, yEnd);
-            PlayingTank playingTank = new PlayingTank(tank, xMiddle, yMiddle);
+            PlayingTank playingTank = new PlayingTank(tank, xMiddle, yMiddle, MainClient.getLoggedPlayer());
             playingTanks.add(playingTank);
         }
     }
