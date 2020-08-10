@@ -50,7 +50,7 @@ public class PlayMultiPlayerMenu extends GUIBase
 
             JLabel powerOfBullet = new JLabel("Bullet Power : " + gameInfo.getBulletPower());
 
-            JLabel mapTemple = new JLabel(resize(gameInfo.getMap(), gameInfo.getMap().getVisualWidth()/4, gameInfo.getMap().getVisualHeight()/4));//TODO:empty Label
+            JLabel mapTemple = new JLabel(resize(gameInfo.getMap(), gameInfo.getMap().getVisualWidth()/4, gameInfo.getMap().getVisualHeight()/4));
             mapTemple.setSize(gameInfo.getMap().getVisualWidth()/4, gameInfo.getMap().getVisualHeight()/4);
 
             JButton connectBtn = new JButton("Connect");

@@ -1,7 +1,9 @@
 package Game.GUIMenu;
 
 import Game.Play.GameInfo;
+import Game.Run.RunGameOffline;
 import Service.Client.MainClient;
+import Service.Player;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -9,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Random;
 
 import static Game.Play.GameInfo.*;
 
@@ -137,8 +140,9 @@ public class PlayWithPc extends GUIBase {
                     return;
                 }
 
+                GameInfo gameInfo;
                 if(leaguePlay.isSelected()) {
-                    GameInfo gameInfo = new GameInfo(-1, "PLAY", true, true,
+                    gameInfo = new GameInfo(-1, "PLAY", true, true,
                             teamGame.isSelected(),
                             leaguePlay.isSelected(),
                             Integer.parseInt(numberOfGame.getText()),
@@ -149,7 +153,7 @@ public class PlayWithPc extends GUIBase {
                             Integer.parseInt(bWallHealth.getText()));
                 }
                 else {
-                    GameInfo gameInfo = new GameInfo(-1, "PLAY", true, true,
+                    gameInfo = new GameInfo(-1, "PLAY", true, true,
                             teamGame.isSelected(),
                             leaguePlay.isSelected(),
                             1,
@@ -161,6 +165,13 @@ public class PlayWithPc extends GUIBase {
                 }
 
                 //TODO Play Game
+                ArrayList<Player> players = new ArrayList<>();
+                players.add(MainClient.getLoggedPlayer());
+                for (int i = 0; i < (gameInfo.getNumberOfPlayers()-1); i++){
+                    players.add(new Player(Player.randomString()));
+                }
+                GUIManager.closePlayWithPc();
+                new RunGameOffline(players, gameInfo, MainClient.getLoggedPlayer());
             }
         });
 

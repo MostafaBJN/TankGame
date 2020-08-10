@@ -8,6 +8,21 @@ import Thing.Thing;
 
 public class Ground implements Thing, Serializable {
 
+    //TYPES
+    public static final int UNKNOWN = -1;
+    public static final int ROAD = 0;
+    public static final int WALL = 1;
+    public static final int BREAKABLE_WALL = 2;
+
+
+
+    //PLACES
+    public static final int OUT_OF_MAP = -1;
+    public static final int SQUARE = 0;
+    public static final int HORIZON_LINE = 1;
+    public static final int VERTICAL_LINE = 2;
+    public static final int CORNER = 3;
+
     //Horizontal == up/down
     //Vertical == right/left
 

@@ -2,9 +2,11 @@
 package Game.Play;
 
 import Game.GUIMenu.GUIBase;
+import Thing.Bullet;
 import Thing.Map.Ground;
 import Thing.Map.MapManager;
 import Thing.PlayingTank;
+import Thing.Prize;
 import Thing.Tank;
 
 import java.awt.Color;
@@ -12,7 +14,10 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+
+import static Thing.Prize.*;
 
 /**
  * The window on which the rendering is performed.
@@ -26,8 +31,10 @@ import java.util.ArrayList;
  */
 public class GameFrame extends GUIBase {
 	
-	public static final int GAME_HEIGHT = MapManager.getSelectedMap().getVisualHeight() + 31 + 7;                  // 720p game resolution
-	public static final int GAME_WIDTH = MapManager.getSelectedMap().getVisualWidth() + 6 + 7;  // wide aspect ratio
+	public static final int GAME_HEIGHT = MapManager.getSelectedMap().getVisualHeight() + (31 + 7);                  // 720p game resolution
+	public static final int GAME_WIDTH = MapManager.getSelectedMap().getVisualWidth() + (6 + 7);// wide aspect ratio
+	public static final int FRAME_HEIGHT = GAME_HEIGHT + (46 + 10 + 4 *(10));// wide aspect ratio
+	public static final int FRAME_WIDTH = GAME_WIDTH;// wide aspect ratio
 
 	//uncomment all /*...*/ in the class for using Tank icon instead of a simple circle
 	/*private BufferedImage image;*/ 
@@ -39,7 +46,7 @@ public class GameFrame extends GUIBase {
 	
 	public GameFrame(String title) {
 		super(title);
-		setSize(GAME_WIDTH, GAME_HEIGHT);
+		setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		setResizable(false);
 		lastRender = -1;
 		fpsHistory = new ArrayList<>(100);
@@ -65,7 +72,7 @@ public class GameFrame extends GUIBase {
 
 	
 	/**
-	 * G rendering with triple-buffering using BufferStrategy.
+	 * Game rendering with triple-buffering using BufferStrategy.
 	 */
 	public void render(GameState state) {
 		// Render single frame
@@ -100,23 +107,78 @@ public class GameFrame extends GUIBase {
 	 */
 	//TODO change
 	private void doRendering(Graphics2D g2d, GameState state) {
-		// Draw background
-//		g2d.setColor(Color.GRAY);
-//		g2d.fillRect(0, 0, GAME_WIDTH +5 +5, GAME_HEIGHT+30 +5);
-//		// Draw ball
-//		g2d.setColor(Color.BLACK);
-//		g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
-		for(ArrayList<Ground> listGround:state.getRun().getGameMap().getMap().getGrounds()){
+		for(ArrayList<Ground> listGround:state.getGameMap().getMap().getGrounds()){
 			for(Ground ground:listGround){
 				ground.styleFinder();
 				g2d.drawImage(ground.getStyleImage(), ground.getStartHorizontalVisualPointInMap()+6, ground.getStartVerticalVisualPointInMap()+31,null);
 			}
 		}
-		for(PlayingTank playingTank:state.getRun().getGameMap().getPlayingTanks()){
-			playingTank.styleFinder();
-			g2d.drawImage(playingTank.getStyleImage(), playingTank.getX() - (Tank.widthOfTank/2), (playingTank.getY() - Tank.heightOfTank/2), null);
-		}
+		int strWidth;
+		int strHeight;
+		int namesWidthScale = (GAME_WIDTH - 10)/state.getGameMap().getPlayers().size();
+		int playerNumber = 0;
+		for(PlayingTank playingTank:state.getGameMap().getPlayingTanks()){
+			//playingTank.styleFinder();
+			strHeight = g2d.getFontMetrics().getHeight();
+			String name = playingTank.getName();
+			strWidth = g2d.getFontMetrics().stringWidth(name);
+			g2d.drawString(name, playerNumber * namesWidthScale + 15 , GAME_HEIGHT + 51 + 2);
 
+			String health;
+			if(!playingTank.death()){
+				g2d.drawImage(playingTank.getStyleImage(), playingTank.getX() - (playingTank.getArea().getWidth()/2), (playingTank.getY() - playingTank.getArea().getHeight()/2), null);
+
+				g2d.drawString(name, playingTank.getX() - strWidth/2, (playingTank.getY() + Tank.heightOfTank/2 + 2));
+				//g2d.drawString(name, GAME_WIDTH, (playingTank.getY() - Tank.heightOfTank/2));
+
+				health = String.valueOf(playingTank.getHealth());
+				strWidth = g2d.getFontMetrics().stringWidth(health);
+				g2d.drawString(health, playingTank.getX() - strWidth/2, (playingTank.getY() + Tank.heightOfTank/2 + 2 + (strHeight+2)));
+
+			}
+
+			if(!playingTank.death()) {
+				health = "Health = " + String.valueOf(playingTank.getHealth());
+			}
+			else {
+				health = "DIED";
+			}
+
+
+			g2d.drawImage(playingTank.getStyleImage(),playerNumber * namesWidthScale + 15 , GAME_HEIGHT + 5, null);
+
+			strWidth = g2d.getFontMetrics().stringWidth(health);
+			g2d.drawString(health, playerNumber * namesWidthScale + 15 , GAME_HEIGHT + 51 + strHeight + 2 + 2);
+
+			String kills = "Kills = " + String.valueOf(playingTank.getKills());
+			strWidth = g2d.getFontMetrics().stringWidth(kills);
+			g2d.drawString(health, playerNumber * namesWidthScale + 15 , GAME_HEIGHT + 51 + (strHeight+2)*2);
+
+			String deaths = "Deaths = " + String.valueOf(playingTank.getDeaths());
+			strWidth = g2d.getFontMetrics().stringWidth(deaths);
+			g2d.drawString(health, playerNumber * namesWidthScale + 15 , GAME_HEIGHT + 51 + (strHeight+2)*3);
+
+			Prize prize = playingTank.getCurrentPrize();
+			if(prize != null) {
+				String prizeName = "Prize = ";
+				switch (prize.getStyle()) {
+					case SHIELD -> prizeName += "SHIELD";
+					case HEALTH_INCREASE -> prizeName += "HEALTH_INCREASE";
+					case LASER -> prizeName += "LASER";
+					case POWER_SHOT_TWICE -> prizeName += "BULLET_POWER_DOUBLE";
+					case POWER_SHOT_TRIPLE -> prizeName += "BULLET_POWER_TRIPLE";
+				}
+				strWidth = g2d.getFontMetrics().stringWidth(prizeName);
+				g2d.drawString(prizeName, playerNumber * namesWidthScale + 15, GAME_HEIGHT + 51 + (strHeight + 2) * 4);
+			}
+
+			for(Bullet bullet:playingTank.getBullets()){
+				BufferedImage image = playingTank.getStyleImage();
+				g2d.drawImage(image, playingTank.getX() - (image.getWidth()/2), (playingTank.getY() - image.getHeight()/2), null);
+			}
+
+			playerNumber++;
+		}
 
 
 /*		g2d.drawImage(image,state.locX,state.locY,null);*/
@@ -137,10 +199,10 @@ public class GameFrame extends GUIBase {
 			//TODO WORDS O SCREEN
 			String str = String.format("Average FPS = %.1f , Last Interval = %d ms",
 					avg, (currentRender - lastRender));
-			g2d.setColor(Color.CYAN);
+			g2d.setColor(Color.RED);
 			g2d.setFont(g2d.getFont().deriveFont(18.0f));
-			int strWidth = g2d.getFontMetrics().stringWidth(str);
-			int strHeight = g2d.getFontMetrics().getHeight();
+			strWidth = g2d.getFontMetrics().stringWidth(str);
+			strHeight = g2d.getFontMetrics().getHeight();
 			g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, strHeight+50);
 		}
 		lastRender = currentRender;
@@ -155,9 +217,9 @@ public class GameFrame extends GUIBase {
         //TODO our part
 		if (state.gameOver) {
 			String str = "GAME OVER";
-			g2d.setColor(Color.WHITE);
+			g2d.setColor(Color.RED);
 			g2d.setFont(g2d.getFont().deriveFont(Font.BOLD).deriveFont(64.0f));
-			int strWidth = g2d.getFontMetrics().stringWidth(str);
+			strWidth = g2d.getFontMetrics().stringWidth(str);
 			g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, GAME_HEIGHT / 2);
 		}
 	}

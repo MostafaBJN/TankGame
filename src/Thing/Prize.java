@@ -100,4 +100,44 @@ public class Prize implements Serializable, Thing
         styleFinder();
     }
 
+
+    public Area getArea() {
+        return area;
+    }
+
+    public int getStyle() {
+        return style;
+    }
+
+    public BufferedImage getStyleImage() {
+        return styleImage;
+    }
+
+    public Timer getUsingTimer() {
+        return usingTimer;
+    }
+
+    public long getPickingTime() {
+        return pickingTime;
+    }
+
+    public boolean isPicked() {
+        return picked;
+    }
+
+    public PlayingTank getPlayingTank() {
+        return playingTank;
+    }
+
+    public int getKeepingTime() {
+        return keepingTime;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }

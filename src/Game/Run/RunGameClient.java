@@ -2,9 +2,9 @@ package Game.Run;
 
 import Game.GUIMenu.GUIManager;
 import Game.Play.GameInfo;
+import Game.Play.GameMap;
 import Service.Command;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -16,7 +16,7 @@ public class RunGameClient implements Runnable {
     public static Socket socket;
     public static ObjectInputStream inputStream;
     public static ObjectOutputStream outputStream;
-    public static Run run;
+    public static GameMap gameMap;
 
     public RunGameClient(GameInfo gameInfo) {
         this.gameInfo = gameInfo;
@@ -43,8 +43,8 @@ public class RunGameClient implements Runnable {
         try {
             outputStream.writeInt(Command.PlayGame.GET_START_OF_GAME);
             outputStream.flush();
-            run = (Run) inputStream.readObject();
-            run.runTheGame();
+            gameMap = (GameMap) inputStream.readObject();
+            new Run(gameMap).runTheGame();
         } catch (IOException | ClassNotFoundException exception) {
             exception.printStackTrace();
         }

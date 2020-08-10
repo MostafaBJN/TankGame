@@ -154,4 +154,9 @@ public class Tank implements Serializable, Thing
     public void setArea(Area area) {
         this.area = area;
     }
+
+    public void setStyleImage(BufferedImage styleImage) {
+        this.styleImage = styleImage;
+    }
+
 }

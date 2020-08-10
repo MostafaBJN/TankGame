@@ -1,7 +1,10 @@
 package Game.Play;
 
 import Game.Run.Run;
+import Service.Client.MainClient;
 import Service.Command;
+import Thing.Area;
+import Thing.Bullet;
 import Thing.Map.*;
 import Service.Player;
 import Thing.PlayingTank;
@@ -18,13 +21,16 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GameState {
 
-    private Run run;
+    private GameMap gameMap;
     public boolean gameOver;
     private Player activePlayer;
     private PlayingTank playingTank;
+    private boolean computer;
+    private boolean server;
 
     private boolean mousePress;
     private int mouseX, mouseY;
@@ -32,11 +38,11 @@ public class GameState {
     private KeyHandler keyHandler;
     private MouseHandler mouseHandler;
 
-    public GameState(Run run, Player activePlayer) {
+    public GameState(GameMap gameMap, Player activePlayer) {
         this.activePlayer = activePlayer;
-        this.run = run;
+        this.gameMap = gameMap;
 
-        for(PlayingTank playingTank:run.getGameMap().getPlayingTanks()){
+        for(PlayingTank playingTank:gameMap.getPlayingTanks()){
             if(playingTank.getOwner().equals(activePlayer)){
                 this.playingTank = playingTank;
             }
@@ -55,18 +61,52 @@ public class GameState {
         //
         keyHandler = new KeyHandler();
         mouseHandler = new MouseHandler();
+        computer = false;
+        server = false;
+
     }
 
-    public BufferedImage rotateImageByDegrees(BufferedImage img, double angle) {
 
-        double rads = Math.toRadians(angle);
-        double sin = Math.abs(Math.sin(rads));
-        double cos = Math.abs(Math.cos(rads));
-        int w = img.getWidth();
-        int h = img.getHeight();
-        int newWidth = (int) Math.floor(w * cos + h * sin);
-        int newHeight = (int) Math.floor(h * cos + w * sin);
+    public GameState(GameMap gameMap, Player activePlayer, boolean computer) {
+        this.activePlayer = activePlayer;
+        this.gameMap = gameMap;
 
+        for(PlayingTank playingTank:gameMap.getPlayingTanks()){
+            if(playingTank.getOwner().equals(MainClient.getLoggedPlayer())){
+                this.playingTank = playingTank;
+            }
+        }
+        gameOver = false;
+
+        keySpace = false;
+        keyUP = false;
+        keyDOWN = false;
+        keyRIGHT = false;
+        keyLEFT = false;
+
+        mousePress = false;
+        mouseX = 0;
+        mouseY = 0;
+        //
+        keyHandler = new KeyHandler();
+        mouseHandler = new MouseHandler();
+        this.computer = true;
+        server = false;
+    }
+
+    /**
+     * Server
+     *
+     * @param gameMap Map of Game
+     */
+    public GameState(GameMap gameMap) {
+        this.gameMap = gameMap;
+        activePlayer = null;
+        computer = false;
+        server = true;
+    }
+
+    public BufferedImage rotateImageByDegrees(BufferedImage img,double angle,double rads,double sin,double cos,int w,int h,int newWidth,int newHeight) {
         BufferedImage rotated = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = rotated.createGraphics();
         AffineTransform at = new AffineTransform();
@@ -89,30 +129,103 @@ public class GameState {
      * The method which updates the game state.
      */
     public void update() {
-//        if (mousePress) {
-//            playingTank.setY(mouseY - diam / 2);
-//            locX = mouseX - diam / 2;
-//        }
 
 
-        if (keyUP) {
-            playingTank.setX((int) (playingTank.getX() + Math.round(playingTank.DEFAULT_SPEED * Math.cos(Math.toRadians(playingTank.getDirection().getAngle())))));
-            playingTank.setY((int) (playingTank.getY() + Math.round(playingTank.DEFAULT_SPEED * Math.sin(Math.toRadians(playingTank.getDirection().getAngle())))));
+        if(server){
+
+
+            return;
         }
-//        if (keyDOWN)
-//            locY += 4;
+
+        if(computer) {
+            for (PlayingTank playingTank1 : gameMap.getPlayingTanks()) {
+                if (!playingTank1.equals(playingTank)) {
+                    if(!playingTank1.death())
+                        updatePC();
+                }
+            }
+        }
+
+        if(!playingTank.death()) {
+            if (keyUP) {
+                if(gameMap.check(playingTank)) {
+                    if(playingTank.getX() + Math.round(playingTank.DEFAULT_SPEED * Math.cos(Math.toRadians(playingTank.getDirection().getAngle()))) > 0|| playingTank.getX() + Math.round(playingTank.DEFAULT_SPEED * Math.cos(Math.toRadians(playingTank.getDirection().getAngle())))<GameFrame.GAME_WIDTH)
+                    {
+                        playingTank.setX((int) (playingTank.getX() + Math.round(playingTank.DEFAULT_SPEED * Math.cos(Math.toRadians(playingTank.getDirection().getAngle())))));
+
+                    }
+                    if(playingTank.getY() + Math.round(playingTank.DEFAULT_SPEED * Math.sin(Math.toRadians(playingTank.getDirection().getAngle()))) > 0|| playingTank.getY() + Math.round(playingTank.DEFAULT_SPEED * Math.sin(Math.toRadians(playingTank.getDirection().getAngle())))<GameFrame.GAME_HEIGHT){
+                        playingTank.setY((int) (playingTank.getY() + Math.round(playingTank.DEFAULT_SPEED * Math.sin(Math.toRadians(playingTank.getDirection().getAngle())))));
+                    }
+                }
+            }
+
+            if (keyLEFT) {
+                playingTank.getDirection().clockwiseTurning();
+                rotateTank();
+            }
+            if (keyRIGHT) {
+                playingTank.getDirection().anticlockwiseTurning();
+                rotateTank();
+            }
+            if (keySpace)
+                playingTank.shootBullet();
+
+            gameMap.getPlayingTanks().set(gameMap.getPlayingTanks().indexOf(playingTank), playingTank);
+        }
 
 
-        if (keyLEFT) {
+    }
+
+    public void rotateTank() {
+        BufferedImage img = playingTank.getStyleImage();
+        double angle = playingTank.getDirection().getAngle();
+        double rads = Math.toRadians(angle);
+        double sin = Math.abs(Math.sin(rads));
+        double cos = Math.abs(Math.cos(rads));
+        int w = img.getWidth();
+        int h = img.getHeight();
+        int newWidth = (int) Math.floor(w * cos + h * sin);
+        int newHeight = (int) Math.floor(h * cos + w * sin);
+        //playingTank.setArea(new Area(newWidth, newHeight));
+        //playingTank.setStyleImage(rotateImageByDegrees(img, angle, rads, sin, cos, w, h, newWidth, newHeight));
+    }
+
+    public void rotateBullet(Bullet bullet) {
+        BufferedImage img = bullet.getStyleImage();
+        double angle = bullet.getDirection().getAngle();
+        double rads = Math.toRadians(angle);
+        double sin = Math.abs(Math.sin(rads));
+        double cos = Math.abs(Math.cos(rads));
+        int w = img.getWidth();
+        int h = img.getHeight();
+        int newWidth = (int) Math.floor(w * cos + h * sin);
+        int newHeight = (int) Math.floor(h * cos + w * sin);
+        //bullet.setArea(new Area(newWidth, newHeight));
+        //playingTank.setStyleImage(rotateImageByDegrees(img, angle, rads, sin, cos, w, h, newWidth, newHeight));
+    }
+
+    public void updatePC() {
+
+        int job = new Random().nextInt(13);
+
+        if (job > 9) {
+            //if(ALLOWAD)
+            playingTank.setX((int) (playingTank.getX() + Math.round(PlayingTank.DEFAULT_SPEED * Math.cos(Math.toRadians(playingTank.getDirection().getAngle())))));
+            playingTank.setY((int) (playingTank.getY() + Math.round(PlayingTank.DEFAULT_SPEED * Math.sin(Math.toRadians(playingTank.getDirection().getAngle())))));
+        }
+
+        else if (job > 5) {
             playingTank.getDirection().clockwiseTurning();
-            rotateImageByDegrees(playingTank.getStyleImage(), playingTank.getDirection().getAngle());
+            rotateTank();
         }
-        if (keyRIGHT) {
+        else if (job > 1) {
             playingTank.getDirection().anticlockwiseTurning();
-            rotateImageByDegrees(playingTank.getStyleImage(), playingTank.getDirection().getAngle());
+            rotateTank();
         }
-        if(keySpace)
+        else if(job == 1) {
             playingTank.shootBullet();
+        }
     }
 
 
@@ -133,6 +246,12 @@ public class GameState {
     class KeyHandler extends KeyAdapter {
 
         @Override
+        public void keyTyped(KeyEvent e){
+            if(e.getKeyCode() == KeyEvent.VK_SPACE)
+                keySpace = true;
+        }
+
+        @Override
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode())
             {
@@ -148,10 +267,10 @@ public class GameState {
                 case KeyEvent.VK_RIGHT:
                     keyRIGHT = true;
                     break;
-                case KeyEvent.VK_SPACE:
-                    keySpace = true;
             }
         }
+
+
 
         @Override
         public void keyReleased(KeyEvent e) {
@@ -200,12 +319,12 @@ public class GameState {
         }
     }
 
-    public Run getRun() {
-        return run;
+    public GameMap getGameMap() {
+        return gameMap;
     }
 
-    public void setRun(Run run) {
-        this.run = run;
+    public void setGameMap(GameMap gameMap) {
+        this.gameMap = gameMap;
     }
 
     public boolean isGameOver() {

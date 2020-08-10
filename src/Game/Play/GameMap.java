@@ -1,12 +1,10 @@
 package Game.Play;
 
 import Service.Client.MainClient;
-import Thing.Map.*;
+import Service.Player;
+import Thing.*;
 import Thing.Area;
-import Thing.Bullet;
-import Thing.PlayingTank;
-import Thing.Prize;
-import Thing.Tank;
+import Thing.Map.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -14,13 +12,19 @@ import java.util.Random;
 public class GameMap {
 
     private Map map;
+    private GameInfo gameInfo;
+    private ArrayList<Player> players;
     private ArrayList<Tank> tanks;
     private ArrayList<PlayingTank> playingTanks;
     private ArrayList<Prize> prizes;
     private ArrayList<Bullet> bullets;
 
-    public static final int CANT_GO = 1;
-    public static final int CAN_GO = 2;
+
+    public static final int TANK = 3;
+    public static final int BREAKABLE_WALL = 4;
+    public static final int WALL = 5;
+    public static final int PRIZE = 6;
+    public static final int BULLET = 7;
     public static final int FREE = 0;
 
     public int visualHeight;
@@ -28,9 +32,16 @@ public class GameMap {
 
     private ArrayList<ArrayList<Integer>> visualGameMapDetail;
 
-    public GameMap(Map map, ArrayList<Tank> tanks) {
-        this.map = map;
-        this.tanks = tanks;
+    public GameMap(GameInfo gameInfo, ArrayList<Player> players) {
+        this.map = gameInfo.getMap();
+        this.gameInfo = gameInfo;
+        this.players = players;
+        tanks = new ArrayList<>();
+        for(Player player:players){
+            Tank tank = player.getTank();
+            tank.setDefaultHealth(gameInfo.getTankHealth());
+            tanks.add(tank);
+        }
         visualGameMapDetail = new ArrayList<>();
         visualHeight = map.getVisualHeight();
         visualWidth = map.getVisualWidth();
@@ -55,10 +66,12 @@ public class GameMap {
                                 ground.getStartVerticalVisualPointInMap(),
                                 ground.getEndVerticalVisualPointInMap())) {
                             int type = ground.getType();
-                            if (type == 0) {
+                            if (type == Ground.ROAD) {
                                 visualGameMapDetail.get(y).add(FREE);
-                            } else {
-                                visualGameMapDetail.get(y).add(CANT_GO);
+                            } else if (type == Ground.WALL){
+                                visualGameMapDetail.get(y).add(WALL);
+                            } else if (type == Ground.BREAKABLE_WALL){
+                                visualGameMapDetail.get(y).add(BREAKABLE_WALL);
                             }
                             find = true;
                         }
@@ -97,15 +110,35 @@ public class GameMap {
             } while (!checkOutLinePointOfTank(xStart, xEnd, yStart, yEnd));
             System.out.println(tank.getName() + " " + tank.getModel() + " : y = " + yMiddle + " , x = " + xMiddle);
             fillTankPlace(xStart, xEnd, yStart, yEnd);
-            PlayingTank playingTank = new PlayingTank(tank, xMiddle, yMiddle, MainClient.getLoggedPlayer());
+            PlayingTank playingTank = new PlayingTank(tank, xMiddle, yMiddle, players.get(players.indexOf(new Player(tank.getName()))));
             playingTanks.add(playingTank);
         }
+    }
+
+    public boolean check(PlayingTank tank){
+        int xStart;
+        int xEnd;
+        int yStart;
+        int yEnd;
+        Area area = tank.getArea();
+        int height = Tank.heightOfTank;
+        int width = Tank.widthOfTank;
+
+        Area middlePoint;
+        int xMiddle = tank.getX();
+        int yMiddle = tank.getY();
+
+            xStart = xMiddle - (height/2);
+            xEnd = xMiddle + (height/2);
+            yStart = yMiddle - (width/2);
+            yEnd = yMiddle + (width/2);
+            return checkOutLinePointOfTank(xStart, xEnd, yStart, yEnd);
     }
 
     private void fillTankPlace(int xStart, int xEnd, int yStart, int yEnd){
         for (int y = yStart; y < yEnd; y++) {
             for (int x = xStart; x < xEnd; x ++){
-                    visualGameMapDetail.get(y).set(x, CANT_GO);
+                    visualGameMapDetail.get(y).set(x, TANK);
             }
         }
     }
@@ -127,7 +160,7 @@ public class GameMap {
                     if(state == FREE){
                         return true;
                     }
-                    else if(state == CANT_GO){
+                    else if(state == WALL || state == BREAKABLE_WALL){
                         return false;
                     }
                 }
@@ -137,20 +170,6 @@ public class GameMap {
     }
 
     private boolean checkOutLinePointOfTank(int xStart, int xEnd, int yStart, int yEnd) {
-//        for (int y = yStart; y < yEnd; y++) {
-//            for (int x = xStart; x < xEnd; x += (xEnd - xStart)-1){
-//                if(!checkAllOfMap(x, y)){
-//                    return false;
-//                }
-//            }
-//        }
-//        for (int x = xStart; x < xEnd; x++) {
-//            for (int y = yStart; y < xEnd; y += (yEnd - xStart)-1){
-//                if(!checkAllOfMap(x, y)){
-//                    return false;
-//                }
-//            }
-//        }
         for (int y = yStart; y <= yEnd; y++) {
             for (int x = xStart; x <= xEnd; x++){
                 if(!checkAllOfMap(x, y)){
@@ -160,6 +179,9 @@ public class GameMap {
         }
         return true;
     }
+
+
+
 
 
     public Area generatePoint() {
@@ -197,5 +219,13 @@ public class GameMap {
 
     public ArrayList<ArrayList<Integer>> getVisualGameMapDetail() {
         return visualGameMapDetail;
+    }
+
+    public GameInfo getGameInfo() {
+        return gameInfo;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
     }
 }

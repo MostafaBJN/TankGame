@@ -20,7 +20,7 @@ public class PlayingTank extends Tank implements Serializable {
     private boolean prizePicked;
     private Prize currentPrize;
 
-    public static final int DEFAULT_SPEED = 20;
+    public static final int DEFAULT_SPEED = 1;
     public static final int DEFAULT_ANGLE = -90;
 
     private double xVelocity;
@@ -29,6 +29,10 @@ public class PlayingTank extends Tank implements Serializable {
 
     private boolean invincible;
     private int powerOfTir;
+
+    private int kills;
+    private int deaths;
+
 
     private Bullet currentBullet;
     private ArrayList<Bullet> bullets;
@@ -40,38 +44,67 @@ public class PlayingTank extends Tank implements Serializable {
         this.x = x;
         this.y = y;
         this.owner = owner;
-        currentBullet = new Bullet(Bullet.STANDARD);
+        currentBullet = new Bullet(Bullet.STANDARD, this);
+        kills = 0;
+        deaths = 0;
         direction = new Degree(DEFAULT_ANGLE);
         invincible = false;
         powerOfTir = Bullet.DEFAULT_DAMAGE_POWER;
-        visualArea = new VisualArea(widthOfTank, health, direction, x, y);
+        visualArea = new VisualArea(widthOfTank, heightOfTank, direction, x, y);
         bullets = new ArrayList<>();
     }
 
     public void shootBullet() {
+        bullets.add(new Bullet(currentBullet));
+    }
 
+    public void destroyTank() {
+        kills ++;
     }
 
     public void killBullet(Bullet bulletToKill) {
         for (Bullet bullet:bullets) {
             if(bulletToKill.equals(bullet)){
-
+                bullets.remove(bullet);
+                break;
             }
         }
     }
 
+    ////
     public void pickPrize(Prize prize) {
         prizePicked = true;
         currentPrize = prize;
-        prize.
     }
 
-    public void getShoot() {
-
+    public void getShoot(Bullet bullet) {
+        health -= bullet.getPower();
     }
 
 
+    public boolean death() {
+        deaths++;
+        return health <= 0;
+    }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PlayingTank)) return false;
+        if (!super.equals(o)) return false;
+
+        PlayingTank that = (PlayingTank) o;
+
+        return owner != null ? owner.equals(that.owner) : that.owner == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (owner != null ? owner.hashCode() : 0);
+        return result;
+    }
 
     public int getHealth() {
         return health;
@@ -181,5 +214,21 @@ public class PlayingTank extends Tank implements Serializable {
 
     public void setDirection(Degree direction) {
         this.direction = direction;
+    }
+
+    public int getKills() {
+        return kills;
+    }
+
+    public int getDeaths() {
+        return deaths;
+    }
+
+    public Bullet getCurrentBullet() {
+        return currentBullet;
+    }
+
+    public ArrayList<Bullet> getBullets() {
+        return bullets;
     }
 }

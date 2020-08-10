@@ -1,12 +1,12 @@
 package Game.Run;
 
-import Game.Play.GameInfo;
+import Game.Play.*;
 import Service.Client.MainClient;
 import Service.Command;
 import Service.Player;
-import Service.Server.MainServer;
 //import com.company.Server.Player;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -23,14 +23,14 @@ public class RunGameServer implements Runnable {
 
     private ServerSocket serverSocket;
     protected ArrayList<Socket> connectionSockets;
-    private Run run;
+    private GameMap gameMap;
 
     //all players info
     protected int countOfOnlinePlayers;
 
 
     public RunGameServer(GameInfo gameInfo) throws IOException {
-        run = null;
+        gameMap = null;
         players = new ArrayList<>();
         this.gameInfo = gameInfo;
         gameMakerPlayer = MainClient.getLoggedPlayer();
@@ -51,6 +51,7 @@ public class RunGameServer implements Runnable {
                 Thread t = new Thread(new ClientCommand(connectionSocket, countOfOnlinePlayers, gameInfo));
                 t.start();
             }
+            runAGame();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -83,9 +84,9 @@ public class RunGameServer implements Runnable {
                     ;
                     //get Command
                     try {
-                        System.out.println("BEFORE IN GAME");
+                        System.out.println("BEFORE IN GAME COMMAND");
                         command = inputStream.readInt();
-                        System.out.println("AFTER IN GAME");
+                        System.out.println("AFTER IN GAME COMMAND");
                         commandMenu(command);
                     }
                     catch (java.io.EOFException | java.net.SocketException eofException) {
@@ -120,15 +121,39 @@ public class RunGameServer implements Runnable {
                     outputStream.flush();
                     break;
                 case PlayGame.GET_START_OF_GAME:
-                    if(run == null){
-                        run = new Run(gameInfo, players);
-                    }
-                    outputStream.writeObject(run);
+                    outputStream.writeObject(gameMap);
+                    outputStream.flush();
+                case PlayGame.GET_GAME_MAP_FROM_SERVER:
+
+                case PlayGame.SEND_GAME_MAP_TO_SERVER:
+                    outputStream.writeObject(gameMap);
                     outputStream.flush();
                 //TODO MAKE A COMMAND MENU
 
             }
         }
 
+    }
+
+    public void runAGame() {
+        if(gameMap == null){
+            gameMap = new GameMap(gameInfo, players);
+        }
+    }
+
+    public void runTheGame() {
+        ThreadPool.init();
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                gameStart();
+            }
+        });
+    }
+
+    private void gameStart() {
+        GameLoop game = new GameLoop();
+        game.init(gameMap);
+        ThreadPool.execute(game);
     }
 }

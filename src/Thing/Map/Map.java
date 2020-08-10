@@ -1,12 +1,14 @@
 package Thing.Map;
 
 import Thing.Bullet;
+import Thing.Map.Ground;
 
 import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import static Thing.Image.Ground.*;
+import static Thing.Map.Ground.*;
 
 public class Map implements Serializable {
 

@@ -1,29 +1,28 @@
 package Game.Run;
 
+import Game.Play.*;
 import Service.Client.MainClient;
-import Thing.Map.Map;
-import Thing.Map.MapManager;
 import Service.Player;
 
-import Game.Play.*;
-import Thing.PlayingTank;
-import Thing.Tank;
-
 import java.awt.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Random;
 
-public class Run {
+public class RunGameOffline {
 
+    protected ArrayList<Player> players;
+    private GameInfo gameInfo;
+    Player gameMakerPlayer;
+    private GameMap gameMap;
 
-    protected GameMap gameMap;
-
-
-
-    public Run(GameMap gameMap) {
-        this.gameMap = gameMap;
+    public RunGameOffline(ArrayList<Player> players, GameInfo gameInfo, Player gameMakerPlayer) {
+        this.players = players;
+        this.gameInfo = gameInfo;
+        this.gameMakerPlayer = gameMakerPlayer;
+        gameMap = new GameMap(gameInfo,players);
+        runTheGame();
     }
-
 
     public void runTheGame() {
         ThreadPool.init();
@@ -43,17 +42,9 @@ public class Run {
         gameFrame.initBufferStrategy();
         // Create and execute the game-loop
         GameLoop game = new GameLoop(gameFrame);
-        game.init(gameMap, MainClient.getLoggedPlayer());
+        game.init(gameMap, gameMakerPlayer, true);
         ThreadPool.execute(game);
         // and the game starts ...
 
-    }
-
-    public GameMap getGameMap() {
-        return gameMap;
-    }
-
-    public void setGameMap(GameMap gameMap) {
-        this.gameMap = gameMap;
     }
 }

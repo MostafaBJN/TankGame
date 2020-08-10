@@ -26,8 +26,8 @@ public class Command {
 
     public static class PlayGame {
         public static final int SEND_PLAYER_INFO_TO_GAME_SERVER = 0;
-        public static final int SEND_GAME_STATE = 1;
-        public static final int GET_GAME_STATE = 2;
+        public static final int SEND_GAME_MAP_TO_SERVER = 1;
+        public static final int GET_GAME_MAP_FROM_SERVER = 2;
         public static final int GET_GAME_INFO_UPDATE = 3;
         public static final int GET_START_OF_GAME = 4;
     }

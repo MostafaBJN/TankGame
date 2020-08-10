@@ -127,17 +127,17 @@ public class Image {
         /**
          * FILE STRING
          */
-        private static final String FOLDER_PATH = "data\\bullet";
+        private static final String FOLDER_PATH = "data\\bullet\\";
         private static final String TYPE_OF_FILE = ".png";
 
 
         /* INSERTING IMAGES */
         static {
             try {
-                STANDARD_IMAGE = ImageIO.read(new File(FOLDER_PATH + "shield" + TYPE_OF_FILE));
-                DOUBLE_IMAGE = ImageIO.read(new File(FOLDER_PATH + "health" + TYPE_OF_FILE));
-                TRIPLE_IMAGE = ImageIO.read(new File(FOLDER_PATH + "laser" + TYPE_OF_FILE));
-                LASER_IMAGE = ImageIO.read(new File(FOLDER_PATH + "double" + TYPE_OF_FILE));
+                STANDARD_IMAGE = ImageIO.read(new File(FOLDER_PATH + "1" + TYPE_OF_FILE));
+                DOUBLE_IMAGE = ImageIO.read(new File(FOLDER_PATH + "2" + TYPE_OF_FILE));
+                TRIPLE_IMAGE = ImageIO.read(new File(FOLDER_PATH + "3" + TYPE_OF_FILE));
+                LASER_IMAGE = ImageIO.read(new File(FOLDER_PATH + "lazer" + TYPE_OF_FILE));
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "Bullit Images Not Loaded!", "Loading Images", JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
@@ -146,20 +146,6 @@ public class Image {
     }
 
     public static class Ground {
-        //TYPES
-        public static final int UNKNOWN = -1;
-        public static final int ROAD = 0;
-        public static final int WALL = 1;
-        public static final int BREAKABLE_WALL = 2;
-
-
-
-        //PLACES
-        public static final int OUT_OF_MAP = -1;
-        public static final int SQUARE = 0;
-        public static final int HORIZON_LINE = 1;
-        public static final int VERTICAL_LINE = 2;
-        public static final int CORNER = 3;
 
         //STYLES
         public static final int EMPTY_FIELD = 0;

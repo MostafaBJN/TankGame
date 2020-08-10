@@ -2,6 +2,7 @@
 package Game;
 
 import Game.Run.Run;
+import Thing.Bullet;
 
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class Main {
 //		// After the player clicks 'PLAY' ...
 //		EventQueue.invokeLater(new Runnable() {
 //			@Override
-//			public void run() {
+//			public void gameMap() {
 //				GameFrame frame = new GameFrame("Simple Ball !");
 //				frame.setLocationRelativeTo(null); // put frame at center of screen
 //				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

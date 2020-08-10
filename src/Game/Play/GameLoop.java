@@ -33,15 +33,38 @@ public class GameLoop implements Runnable {
 	public GameLoop(GameFrame frame) {
 		canvas = frame;
 	}
+
+	public GameLoop() {
+		canvas = null;
+	}
 	
 	/**
 	 * This must be called before the game loop starts.
 	 */
-	public void init(Run run, Player activePlayer) {
-		state = new GameState(run, activePlayer);
+	public void init(GameMap gameMap, Player activePlayer) {
+		state = new GameState(gameMap, activePlayer);
 		canvas.addKeyListener(state.getKeyListener());
 		canvas.addMouseListener(state.getMouseListener());
 		canvas.addMouseMotionListener(state.getMouseMotionListener());
+	}
+
+	public void init(GameMap gameMap, Player activePlayer, boolean computer){
+		state = new GameState(gameMap, activePlayer, computer);
+		canvas.addKeyListener(state.getKeyListener());
+		canvas.addMouseListener(state.getMouseListener());
+		canvas.addMouseMotionListener(state.getMouseMotionListener());
+	}
+
+	/**
+	 * for offline
+	 */
+	public void init(GameMap gameMap) {
+		state = new GameState(gameMap);
+		if(canvas != null) {
+			canvas.addKeyListener(state.getKeyListener());
+			canvas.addMouseListener(state.getMouseListener());
+			canvas.addMouseMotionListener(state.getMouseMotionListener());
+		}
 	}
 
 	@Override
@@ -50,9 +73,10 @@ public class GameLoop implements Runnable {
 		while (!gameOver) {
 			try {
 				long start = System.currentTimeMillis();
-
 				state.update();
-				canvas.render(state);
+				if(canvas != null) {
+					canvas.render(state);
+				}
 				gameOver = state.gameOver;
 				//stabling fps
 				long delay = (1000 / FPS) - (System.currentTimeMillis() - start);
@@ -61,6 +85,8 @@ public class GameLoop implements Runnable {
 			} catch (InterruptedException ex) {
 			}
 		}
-		canvas.render(state);
+		if(canvas != null) {
+			canvas.render(state);
+		}
 	}
 }
