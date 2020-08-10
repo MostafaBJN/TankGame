@@ -2,6 +2,7 @@ package Game.GUIMenu;
 
 
 import Game.Play.GameInfo;
+import Service.Client.MainClient;
 import Service.Player;
 
 import javax.swing.*;
@@ -62,8 +63,8 @@ public class GUIManager {
         addGame.closeGUI();
     }
 
-    public static void openSetting(){
-        setting = new Setting("Setting", new Player("",""));
+    public static void openSetting(Player player){
+        setting = new Setting("Setting", player);
         setting.showGUI();
     }
 

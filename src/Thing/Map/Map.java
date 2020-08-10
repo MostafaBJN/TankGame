@@ -1,5 +1,7 @@
 package Thing.Map;
 
+import Thing.Bullet;
+
 import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -147,6 +149,13 @@ public class Map implements Serializable {
         }
     }
 
+
+    public void shootABreakableWall(BreakableWall breakableWall, Bullet bullet) {
+        if(!breakableWall.getShoot(bullet)){
+            breakableWallBreaks(breakableWall);
+        }
+    }
+
     /**
      * replacing this wall with road in grounds List
      * changing a broke wall to a road
@@ -162,7 +171,9 @@ public class Map implements Serializable {
             System.out.println("NOT A BREAKABLE WALL");
             return;
         }
-        grounds.get(breakableWall.getVerticalPlaceInMap()).set(breakableWall.getHorizontalPlaceInMap(), new Ground(breakableWall));
+        Ground ground = new Ground(breakableWall);
+        grounds.get(breakableWall.getVerticalPlaceInMap()).set(breakableWall.getHorizontalPlaceInMap(), ground);
+        groundsOneLineList.set(grounds.indexOf(breakableWall), ground);
     }
 
 

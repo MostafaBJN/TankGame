@@ -1,18 +1,20 @@
 package Thing;
 
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 
 import static Thing.Image.Bullet.*;
 
 public class Bullet implements Serializable, Thing {
+
+    public static final int STANDARD = 0;
+    public static final int DOUBLE = 1;
+    public static final int TRIPLE = 2;
+    public static final int LASER = 3;
 
     public static final long LIFE_TIME = 4000;
     public static final long DEFAULT_VELOCITY = 20;
@@ -24,30 +26,51 @@ public class Bullet implements Serializable, Thing {
     private int style;
     private transient BufferedImage styleImage;
 
-    private Tank shooterTank;
+    private PlayingTank shooterTank;
 
     private int defaultPower;
+    private int power;
     private double velocity;
+    private double xVelocity;
+    private double yVelocity;
     private Degree direction;
-    private Timer lifeTimer;
-    private long startTime;
 
-    public Bullet(Tank bulletShooterTank) {
+    private int x;
+    private int y;
+
+    private Timer shootTimer;
+    private long shootTime;
+
+    public Bullet(PlayingTank bulletShooterTank) {
         this.shooterTank = bulletShooterTank;
-        lifeTimer = new Timer(0, new ActionListener() {
+        shootTimer = new Timer(0, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(System.currentTimeMillis() - startTime >= LIFE_TIME){
-                    //Kill Bullet
-                    lifeTimer.stop();
-                    //TODO kill bullet
+                if(System.currentTimeMillis() >= shootTime + LIFE_TIME){
+                    shooterTank.killBullet(Bullet.this);
+                    shootTimer.stop();
                 }
             }
         });
-        lifeTimer.start();
-        startTime = System.currentTimeMillis();
+        shootTimer.start();
+        shootTime = System.currentTimeMillis();
     }
 
+    public Bullet(int style) {
+        setStyle(style);
+        defaultPower = DEFAULT_DAMAGE_POWER;
+        power = defaultPower;
+        velocity = DEFAULT_VELOCITY;
+    }
+
+    public Bullet(Bullet bullet) {
+
+    }
+
+
+    public void killBullet() {
+        shooterTank.killBullet(this);
+    }
     /**
      * Find the Image Of This Bullet
      */
@@ -62,10 +85,8 @@ public class Bullet implements Serializable, Thing {
 
     @Override
     public void setStyle(int style) {
-
+        this.style = style;
+        styleFinder();
     }
 
-    public int getDefaultPower() {
-        return defaultPower;
-    }
 }

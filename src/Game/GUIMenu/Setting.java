@@ -8,13 +8,15 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.IOException;
 
 public class Setting extends GUIBase {
 
 
     private JButton backBtn;
 
-    private JButton changeTankBtn;
 
     private JTextField playedTime;
     private JTextField username;
@@ -26,8 +28,6 @@ public class Setting extends GUIBase {
     private JTextField bulletPower;
     private JTextField bWallHealth;
 
-    private JCheckBox teamGame;
-    private JCheckBox finishGame;
 
     private JPanel infoPanel;
     private JPanel mainPanel;
@@ -45,7 +45,6 @@ public class Setting extends GUIBase {
     private JLabel offlineLosesLabel;
     private JLabel tankImage;
     private JLabel tankImageLabel;
-    private JLabel changeTankLabel;
 
     protected Setting(String title, Player player) {
         super(title);
@@ -90,16 +89,48 @@ public class Setting extends GUIBase {
         bWallHealthLabel = new JLabel("Breakable Wall Health :");
         bWallHealth = new JTextField(String.valueOf(player.getDefaultBreakableWallHealth()));
 
+        JPanel pp = new JPanel(new GridLayout(0,2,5,5));
 
         tankImageLabel = new JLabel("Your Tank :");
         player.getTank().styleFinder();
-        tankImage = new JLabel((Icon) player.getTank().getStyleImage());
+        tankImage = new JLabel();
+        tankImage.setIcon(new ImageIcon(player.getTank().getStyleImage()));
+        tankImage.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    MainClient.getLoggedPlayer().getTank().changeTankModel();
+                    MainClient.sendPlayerInfoToServer(MainClient.getLoggedPlayer());
+                    GUIManager.closeSetting();
+                    GUIManager.openSetting(player);
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
+            }
 
-        changeTankLabel = new JLabel("Change Tank Model");
-        changeTankBtn = new JButton("Tank Model");
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
 
 
-        infoPanel = new JPanel(new GridLayout(9, 2, 5, 5));
+
+        infoPanel = new JPanel(new GridLayout(10, 2, 5, 5));
         infoPanel.add(playedTimeLabel);
         infoPanel.add(playedTime);
         infoPanel.add(usernameLabel);
@@ -118,6 +149,8 @@ public class Setting extends GUIBase {
         infoPanel.add(tankHealth);
         infoPanel.add(bWallHealthLabel);
         infoPanel.add(bWallHealth);
+        infoPanel.add(tankImageLabel);
+        infoPanel.add(tankImage);
 
 
 
@@ -128,7 +161,7 @@ public class Setting extends GUIBase {
                 MainClient.getLoggedPlayer().setDefaultBulletPower(Integer.parseInt(bulletPower.getText()));
                 MainClient.getLoggedPlayer().setDefaultTankHealth(Integer.parseInt(tankHealth.getText()));
                 MainClient.getLoggedPlayer().setDefaultBreakableWallHealth(Integer.parseInt(bWallHealth.getText()));
-                
+
                 GUIManager.closeSetting();
                 GUIManager.openMainMenu();
             }

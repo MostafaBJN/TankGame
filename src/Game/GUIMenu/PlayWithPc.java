@@ -1,6 +1,7 @@
 package Game.GUIMenu;
 
 import Game.Play.GameInfo;
+import Service.Client.MainClient;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -48,13 +49,13 @@ public class PlayWithPc extends GUIBase {
         personLimit = new JTextField();
 
         bulletPowerLabel = new JLabel("Bullet Power :");
-        bulletPower = new JTextField();
+        bulletPower = new JTextField(String.valueOf(MainClient.getLoggedPlayer().getDefaultBulletPower()));
 
         tankHealthLabel = new JLabel("Tank Health :");
-        tankHealth = new JTextField();
+        tankHealth = new JTextField(String.valueOf(MainClient.getLoggedPlayer().getDefaultTankHealth()));
 
         bWallHealthLabel = new JLabel("Breakable Wall Health :");
-        bWallHealth = new JTextField();
+        bWallHealth = new JTextField(String.valueOf(MainClient.getLoggedPlayer().getDefaultBreakableWallHealth()));
 
         teamGame = new JCheckBox("Team Game", false);
         leaguePlay = new JCheckBox("League Game", false);

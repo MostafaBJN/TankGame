@@ -29,6 +29,7 @@ public class Player extends Setting implements Serializable {
         this.username = username;
         this.password = password;
         keepLogin = false;
+        tank = new Tank(username);
     }
 
     public BufferedImage getPictureOfTank() {

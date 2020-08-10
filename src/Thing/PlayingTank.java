@@ -4,6 +4,7 @@ package Thing;
 import Service.Player;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class PlayingTank extends Tank implements Serializable {
 
@@ -29,19 +30,43 @@ public class PlayingTank extends Tank implements Serializable {
     private boolean invincible;
     private int powerOfTir;
 
+    private Bullet currentBullet;
+    private ArrayList<Bullet> bullets;
+
+
     public PlayingTank(Tank tank, int x, int y, Player owner){
         super(tank);
         health = defaultHealth;
         this.x = x;
         this.y = y;
         this.owner = owner;
+        currentBullet = new Bullet(Bullet.STANDARD);
         direction = new Degree(DEFAULT_ANGLE);
         invincible = false;
         powerOfTir = Bullet.DEFAULT_DAMAGE_POWER;
         visualArea = new VisualArea(widthOfTank, health, direction, x, y);
+        bullets = new ArrayList<>();
     }
 
     public void shootBullet() {
+
+    }
+
+    public void killBullet(Bullet bulletToKill) {
+        for (Bullet bullet:bullets) {
+            if(bulletToKill.equals(bullet)){
+
+            }
+        }
+    }
+
+    public void pickPrize(Prize prize) {
+        prizePicked = true;
+        currentPrize = prize;
+        prize.
+    }
+
+    public void getShoot() {
 
     }
 
@@ -79,7 +104,6 @@ public class PlayingTank extends Tank implements Serializable {
     public int getPowerOfTir() {
         return powerOfTir;
     }
-
 
 
     public VisualArea getVisualArea() {
@@ -145,5 +169,17 @@ public class PlayingTank extends Tank implements Serializable {
 
     public void setPowerOfTir(int powerOfTir) {
         this.powerOfTir = powerOfTir;
+    }
+
+    public void setVisualArea(VisualArea visualArea) {
+        this.visualArea = visualArea;
+    }
+
+    public void setCurrentPrize(Prize currentPrize) {
+        this.currentPrize = currentPrize;
+    }
+
+    public void setDirection(Degree direction) {
+        this.direction = direction;
     }
 }

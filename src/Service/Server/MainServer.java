@@ -109,7 +109,6 @@ public class MainServer extends Command {
         @Override
         public void run() {
             try {
-                //TODO first login info send
                 int command = MainMenu.UNKNOWN;
                 while (true) {
                     //a player connect
@@ -256,8 +255,6 @@ public class MainServer extends Command {
                         e.printStackTrace();
                     }
                     break;
-                    //TODO MAKE A COMMAND MENU
-
             }
         }
 

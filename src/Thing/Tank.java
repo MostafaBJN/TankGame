@@ -9,6 +9,8 @@ package Thing;
 
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 import static Thing.Image.Tank.*;
@@ -21,7 +23,6 @@ public class Tank implements Serializable, Thing
     public static final int DEFAULT_HEALTH_VALUE = 200;//should discus
     public static final int MAX_HEALTH_VALUE = 1000;//should discus
     public static final int MIN_HEALTH_VALUE = 1;//should discus
-
 
 
     public static final int heightOfTank = BLACK_TANK_IMAGE.getHeight();
@@ -78,6 +79,10 @@ public class Tank implements Serializable, Thing
     }
 
 
+    public void changeTankModel() {
+        style = (style + 1) % NUMBER_OF_TANK_STYLES;
+    }
+
     /**
      * Find the Image Of This Ground
      */
@@ -96,11 +101,27 @@ public class Tank implements Serializable, Thing
         }
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Tank)) return false;
+
+        Tank tank = (Tank) o;
+
+        return Objects.equals(name, tank.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
+    }
+
     @Override
     public void setStyle(int style) {
         this.style = style;
-        styleFinder();    }
-
+        styleFinder();
+    }
 
     public BufferedImage getStyleImage() {
         return styleImage;
@@ -120,5 +141,17 @@ public class Tank implements Serializable, Thing
 
     public Area getArea() {
         return area;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDefaultHealth(int defaultHealth) {
+        this.defaultHealth = defaultHealth;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
     }
 }

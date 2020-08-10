@@ -117,7 +117,7 @@ public class MainMenu extends GUIBase {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(e.getSource().equals(settingBtn)){
-                GUIManager.openSetting();
+                GUIManager.openSetting(MainClient.getLoggedPlayer());
                 GUIManager.closeMainMenu();
             }
             else if(e.getSource().equals(playWithPcBtn)){

@@ -1,5 +1,7 @@
 package Thing.Map;
 
+import Thing.Bullet;
+
 import javax.swing.*;
 import java.io.Serializable;
 
@@ -34,14 +36,14 @@ public class BreakableWall extends Ground implements Serializable {
      * give Damage to Breakable Wall
      * & checking for Breaking a Wall
      *
-     * @param damage value of taken damage
+     * @param bullet bullet shoot the wall
      * @return Is Wall Still Live
      */
-    public boolean givingDamage(int damage) {
+    public boolean getShoot(Bullet bullet) {
         //should change type of this Ground
-        if(health - damage <= 0)
+        if(health - bullet.getPower() <= 0)
             return false;
-        health -= damage;
+        health -= bullet.getPower();
         return true;
     }
 
